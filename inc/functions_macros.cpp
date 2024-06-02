@@ -58,6 +58,13 @@
     ERR_FAILED_CALL("execvp"); \
 }
 
+// vector operations
+
+template<typename T>
+bool vec_contains(const vector<T>& vec, const T& element) {
+    return find(vec.begin(), vec.end(), element) != vec.end();
+}
+
 // reading memory of other processes
 
 string process_read_cstr_as_string(pid_t pid, char* addr){
@@ -103,6 +110,14 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
 
+    // "permanent" settings
+
+    static vector<string> permanent_whitelist_path;
+    static vector<string> permanent_blacklist_path;
+
+    static vector<string> permanent_whitelist_path_prefix;
+    // TODO blacklist
+
     // read and sanitise parameter `path` from process memory
     // this can, in fact, be a file or a folder
 
@@ -121,9 +136,11 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
             }
 
             // probably file doesn't exist
-            // deny syscall just in case
+            // denying the syscall would be the safer choice, however I've seen apps break because of this
+            // as the app crashes thinkin that the OS doesnt support the `open` syscall (as of writing this the
+            // method for invalidating syscalls that we use is to ivalidate the syscall id)
 
-            return false;
+            return true;
 
         }
 
@@ -151,6 +168,20 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
         }
     }
 
+    // allow/deny if found in the "permanent" lists
+
+    if(vec_contains(permanent_whitelist_path, path)){
+        return true;
+    }else if(vec_contains(permanent_blacklist_path, path)){
+        return false;
+    }
+
+    for(string& prefix : permanent_whitelist_path_prefix){
+        if(path.starts_with(prefix)){
+            return true;
+        }
+    }
+
     // ask user if he wants to permit/deny the syscall request
 
     cout << '\n';
@@ -163,17 +194,42 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
 
     for(;;){
 
-        cout << "(p)ermit/(d)eny: ";
+        cout << "(a):allow / (d):deny / (pa):permanently-allow-path / (pd):permanently-deny-path / (pap):permanently-allow-path-prefix > ";
 
         string action;
         getline(cin, action);
 
-        if(action == "d"){
-            return false;
-        }else if(action == "p"){
+        if(action == "a"){
             return true;
+
+        }else if(action == "d"){
+            return false;
+
+        }else if(action == "pa"){
+            permanent_whitelist_path.push_back(path);
+            return true;
+
+        }else if(action == "pd"){
+            permanent_blacklist_path.push_back(path);
+            return false;
+
+        }else if(action == "pap"){
+            cout << "Enter the prefix that you want to permanently allow: ";
+
+            string prefix;
+            getline(cin, prefix);
+
+            if(!path.starts_with(prefix)){
+                cout << "Path `" << path << "` doesn't start with prefix `" << prefix << "`\n";
+                continue;
+            }
+
+            permanent_whitelist_path_prefix.push_back(prefix);
+            return true;
+
         }else{
             cout << "Invalid action `" << action << "`\n";
+            continue;
         }
     }
 

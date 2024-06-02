@@ -14,5 +14,6 @@
 #include <iostream>
 #include <cassert>
 #include <map>
+#include <vector>
 
 using namespace std;

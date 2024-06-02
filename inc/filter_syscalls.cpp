@@ -17,6 +17,7 @@ int return_code = 1;
         
         int status;
         pid_t pid = waitpid(-1, &status, 0); // the first argument being -1 means: wait for any child process
+        // `waitpid` returns when a child's state changes, and that means: the child terminated; the child was stopped by a signal; or the child was resumed by a signal
 
         if(
             ( status>>8 == (SIGTRAP | (PTRACE_EVENT_CLONE<<8)) ) ||
@@ -63,27 +64,42 @@ int return_code = 1;
             // generic syscall that we need to filter
 
         }else{
-            // no idea how we got here
+            // // no idea how we got here
 
-            // it seems that if we get to this point we cannot effect the syscall
-            // eg, we cannot invalidate the syscall id
-            // (this very well seems to be the case with the execve syscall)
+            // // it seems that if we get to this point we cannot effect the syscall
+            // // eg, we cannot invalidate the syscall id
+            // // (this very well seems to be the case with the execve syscall)
 
-            cout << "DEBUG: wtf, this must never happen; it's possible that the next syscall will be unblockable\n";
+            // cout << "DEBUG: wtf, this must never happen; it's possible that the next syscall will be unblockable\n";
 
-            // TODO? check if the syscall is an `execvp`, and if so just give up
-            // however, it might be the case that we have fucked something up in the spawn code
-            // and somehow given permission to run execvp?????
+            // // TODO? check if the syscall is an `execvp`, and if so just give up
+            // // however, it might be the case that we have fucked something up in the spawn code
+            // // and somehow given permission to run execvp?????
 
-            if(!WIFSTOPPED(status)){
-                cerr << "wtf ** 2 A\n";
-                exit(1);
+            // if(!WIFSTOPPED(status)){
+            //     cerr << "wtf ** 2 A\n";
+            //     exit(1);
+            // }
+
+            // if(WSTOPSIG(status) != SIGTRAP){
+            //     cerr << "wtf ** 2 B\n";
+            //     exit(1);
+            // }
+
+
+            // fuck this shit
+
+            if(WIFSTOPPED(status)){
+                if(WSTOPSIG(status) != SIGTRAP){
+                    cerr << "DEBUG: wtf\n";
+                }
+            }else{
+                cerr << "DEBUG: fucking impossible\n";
             }
 
-            if(WSTOPSIG(status) != SIGTRAP){
-                cerr << "wtf ** 2 B\n";
-                exit(1);
-            }
+            ptrace(PTRACE_CONT, pid, NULL, NULL);
+
+            continue;
         }
 
         // get value of CPU regs
