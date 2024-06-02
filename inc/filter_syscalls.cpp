@@ -1,10 +1,4 @@
 
-// TODO? make it so that we get the return code of the main thread and return that, altho
-//  it might be the case that the main thread is just a "spawner"
-// we should probably make this into a define - weather to return bad code if ANY of the processes has
-//  failed, or to only return the code of "spawner", or even to kill all processes if the "spawner" has died
-//  (altho this seems like the worst option since we would probably break some apps)
-
 int return_code = 69;
 // if this doesn't get changed, that must meanthat we made a mistake
 
