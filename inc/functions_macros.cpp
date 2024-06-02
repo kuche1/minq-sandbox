@@ -66,6 +66,10 @@
     } \
 }
 
+// function declarations
+
+tuple<bool, string> resolve_path_at_cwd(string& path);
+
 // vector operations
 
 template<typename T>
@@ -73,7 +77,7 @@ bool vec_contains(const vector<T>& vec, const T& element) {
     return find(vec.begin(), vec.end(), element) != vec.end();
 }
 
-// reading memory of other processes
+// reading data of other processes
 
 string process_read_cstr_as_string(pid_t pid, char* addr){
 
@@ -111,12 +115,53 @@ string process_read_cstr_as_string(pid_t pid, char* addr){
 
 }
 
+tuple<bool, string> process_get_fd_path(pid_t pid, int fd){
+
+    ostringstream oss_path;
+    oss_path << "/proc/" << pid << "/fd/" << fd;
+    string path = oss_path.str();
+
+    auto [failed, resolved_path] = resolve_path_at_cwd(path);
+    if(failed){
+        return make_tuple(true, "");
+    }
+
+    return make_tuple(false, resolved_path);
+}
+
+// paths
+
+tuple<bool, string> resolve_path_at_cwd(string& path){
+
+    char resolved_path[PATH_MAXLEN];
+    errno = 0;
+
+    if(!realpath(path.c_str(), resolved_path)){
+
+        if(errno == ENOMEM){
+            cout << "Could not resolve path because of lack of buffer memory, please contact the developer\n";
+            exit(1);
+        }
+
+        return make_tuple(true, string(""));
+
+    }
+
+    return make_tuple(false, string(resolved_path));
+}
+
 // handling of syscalls
 
 // TODO we need to add the option to "permit and save" or "deny and save"
 bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
+
+    constexpr bool ret_value_if_cant_resolve_path = true;
+    // probably file doesn't exist
+    // denying the syscall would be the safer choice, however I've seen apps break because of this
+    // as the app crashes thinkin that the OS doesnt support the `open` syscall (as of writing this the
+    // method for invalidating syscalls that we use is to ivalidate the syscall id)
 
     // "permanent" settings
 
@@ -133,32 +178,38 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
 
     if(dir_fd == AT_FDCWD){ // relative to CWD
 
-        char resolved_path[PATH_MAXLEN];
-        errno = 0;
-
-        if(!realpath(path.c_str(), resolved_path)){
-
-            if(errno == ENOMEM){
-                cout << "Could not resolve path because of lack of buffer memory, please contact the developer\n";
-                exit(1);
-            }
-
-            // probably file doesn't exist
-            // denying the syscall would be the safer choice, however I've seen apps break because of this
-            // as the app crashes thinkin that the OS doesnt support the `open` syscall (as of writing this the
-            // method for invalidating syscalls that we use is to ivalidate the syscall id)
-
-            return true;
-
+        auto [failed, resolved_path] = resolve_path_at_cwd(path);
+        if(failed){
+            return ret_value_if_cant_resolve_path;
         }
-
-        path = string(resolved_path);
+        path = resolved_path;
     
     }else{
 
-        // TODO!
-        cerr << "Not implemented yet, please contact the developer\n";
-        exit(1);
+        if(path.starts_with("/")){
+
+            auto [failed, resolved_path] = resolve_path_at_cwd(path);
+            if(failed){
+                return ret_value_if_cant_resolve_path;
+            }
+            path = resolved_path;
+
+        }else{
+
+            auto [failed, fd_path] = process_get_fd_path(pid, dir_fd);
+            if(failed){
+                return ret_value_if_cant_resolve_path;
+            }
+
+            // we know that `path` doesn't start with `/`, so the only thing to check is `fd_path`
+            if(!fd_path.ends_with("/")){
+                fd_path += "/";
+            }
+    
+            // now combine the folder path and the filename
+            path = fd_path + path;
+
+        }
 
     }
 
