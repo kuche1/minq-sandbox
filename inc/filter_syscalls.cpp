@@ -122,13 +122,11 @@ int return_code = 69;
                 continue;
             }
 
-            // if( (WSTOPSIG(status) != SIGTRAP) && (WSTOPSIG(status) != SIGSTOP) && (WSTOPSIG(status) != SIGCHLD)){
-            //     cout << "DEBUG: stop signal is " << WSTOPSIG(status) << '\n';
-            //     // cout << "DEBUG: SIGTRAP is " << SIGTRAP << '\n';
-            //     // cout << "DEBUG: SIGSTOP is " << SIGTRAP << '\n';
-            // }
+            // cout << "DEBUG: stop signal is " << WSTOPSIG(status) << '\n';
 
+            // KILL(pid, SIGCONT);
             PTRACE(PTRACE_CONT, pid, NULL, NULL);
+
             continue;
 
         }

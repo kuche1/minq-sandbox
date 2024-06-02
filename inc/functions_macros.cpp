@@ -58,6 +58,14 @@
     ERR_FAILED_CALL("execvp"); \
 }
 
+// kill
+
+#define KILL(...) {\
+    if(kill(__VA_ARGS__)) {\
+        ERR_FAILED_CALL("kill"); \
+    } \
+}
+
 // vector operations
 
 template<typename T>
