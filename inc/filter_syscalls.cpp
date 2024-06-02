@@ -15,8 +15,10 @@ int return_code = 69;
         // `waitpid` returns when a child's state changes, and that means: the child terminated; the child was stopped by a signal; or the child was resumed by a signal
 
         if(pid == -1){
-            cout << "Unknown error\n";
+            // TODO this should not be happening
+            cerr << "DEBUG: wtf, pid==-1; processes_running:" << processes_running << "\n";
             exit(1);
+            // continue;
         }
 
         if(
@@ -127,6 +129,7 @@ int return_code = 69;
 
                     default:
                         cerr << "Unknown domain `" << domain << "` detected during socket creation\n";
+                        exit(1);
                         break;
 
                 }
