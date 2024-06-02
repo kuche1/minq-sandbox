@@ -1,6 +1,8 @@
 
 // generic
 
+#define PATH_MAXLEN (4096+1) /* +1 for the ending \0 */
+
 #define ERR_FAILED_CALL(to_what) { \
     cout << "Failed call to `" << to_what << "` in file `" << __FILE__ << "` at line " << __LINE__ << '\n'; \
     exit(1); \
@@ -54,4 +56,104 @@
 #define EXECVP(...) { \
     execvp(__VA_ARGS__); \
     ERR_FAILED_CALL("execvp"); \
+}
+
+// reading memory of other processes
+
+string process_read_cstr_as_string(pid_t pid, char* addr){
+
+    string str;
+
+    for(;;){
+
+        // read chunk of data
+
+        char chunk[sizeof(long)];
+        errno = 0;
+
+        *(long*)chunk = ptrace(PTRACE_PEEKDATA, pid, addr, NULL);
+
+        if( (*(long*)chunk == -1) && (errno != 0) ){
+            // the process has probably exited (or perhaps the address is wrong)
+            cout << "Could not read data from process with pid " << pid << '\n';
+            exit(1);
+        }
+
+        addr += sizeof(long);
+
+        // process chunk data
+
+        for(char ch : chunk){
+
+            if(ch == 0){
+                return str;
+            }
+
+            str += ch;
+        }
+
+    }
+
+}
+
+// handling of syscalls
+
+bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
+
+    // https://man7.org/linux/man-pages/man2/openat.2.html
+
+    // read and sanitise parameter `path` from process memory
+    // this can, in fact, be a file or a folder
+
+    string path = process_read_cstr_as_string(pid, pidmem_filename);
+
+    if(dir_fd == AT_FDCWD){ // relative to CWD
+
+        char resolved_path[PATH_MAXLEN];
+        errno = 0;
+
+        if(!realpath(path.c_str(), resolved_path)){
+
+            if(errno == ENOMEM){
+                cout << "Could not resolve path because of lack of buffer memory, please contact the developer\n";
+                exit(1);
+            }
+
+            // probably file doesn't exist
+            // deny syscall just in case
+
+            return false;
+
+        }
+
+        path = string(resolved_path);
+    
+    }else{
+
+        // TOD0
+        cerr << "Not implemented yet, please contact the developer\n";
+        exit(1);
+
+    }
+
+    // parse parameter `flags`
+
+    // `flags` must include one of these: O_RDONLY (read only), O_WRONLY (write only), O_RDWR (read and write)
+    // other flags can be bitwise OR-ed
+    bool read_only = (flags | O_RDONLY);
+
+    // allow reading libraries
+
+    if(read_only){
+        if(path.starts_with("/usr/lib/")){
+            return true;
+        }
+    }
+
+    // print some info
+
+    cout << "DEBUG: SYS_openat: pid:" << pid << " dir_fd:" << dir_fd << " path:" << path << " flags:" << flags << " mode:" << mode << " read-only:" << read_only <<'\n';
+
+    return false;
+
 }

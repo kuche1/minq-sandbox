@@ -125,10 +125,30 @@ int return_code = 1;
 
             } break;
 
+
             case SYS_open:
+            {
+
+                int dir_fd = AT_FDCWD;
+                char *filename = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+                int flags = CPU_REG_R_SYSCALL_ARG1(regs);
+                mode_t mode = CPU_REG_R_SYSCALL_ARG2(regs);
+
+                syscall_allow = handle_syscall_openat(pid, dir_fd, filename, flags, mode);
+
+            } break;
+
+
             case SYS_openat:
             {
-                syscall_allow = true; // TODO super bad
+
+                int dir_fd = CPU_REG_R_SYSCALL_ARG0(regs);
+                char *filename = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
+                int flags = CPU_REG_R_SYSCALL_ARG2(regs);
+                mode_t mode = CPU_REG_R_SYSCALL_ARG3(regs);
+
+                syscall_allow = handle_syscall_openat(pid, dir_fd, filename, flags, mode);
+
             } break;
 
         }

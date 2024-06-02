@@ -8,10 +8,14 @@
 #include <sys/user.h>
 #include <sys/syscall.h>
 #include <sys/socket.h>
+#include <fcntl.h>
 
 // c++ includes
 #include <iostream>
 #include <cassert>
 #include <map>
+
+#include <filesystem>
+#include <iostream>
 
 using namespace std;
