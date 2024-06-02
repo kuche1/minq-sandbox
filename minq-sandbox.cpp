@@ -5,6 +5,10 @@
 //
 // make it so that syscall settings are presistent over sandbox restart
 
+// TOD0
+//
+// make the file `functions_macros.cpp` less fucky
+
 #include "inc/includes_namespaces.cpp"
 
 #include "inc/functions_macros.cpp"
