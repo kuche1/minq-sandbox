@@ -71,6 +71,10 @@ int return_code = 1;
 
             cout << "DEBUG: wtf, this must never happen; it's possible that the next syscall will be unblockable\n";
 
+            // TODO? check if the syscall is an `execvp`, and if so just give up
+            // however, it might be the case that we have fucked something up in the spawn code
+            // and somehow given permission to run execvp?????
+
             if(!WIFSTOPPED(status)){
                 cerr << "wtf ** 2 A\n";
                 exit(1);
