@@ -98,6 +98,7 @@ string process_read_cstr_as_string(pid_t pid, char* addr){
 
 // handling of syscalls
 
+// TODO we need to add the option to "permit and save" or "deny and save"
 bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
@@ -150,10 +151,30 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
         }
     }
 
-    // print some info
+    // ask user if he wants to permit/deny the syscall request
 
-    cout << "DEBUG: SYS_openat: pid:" << pid << " dir_fd:" << dir_fd << " path:" << path << " flags:" << flags << " mode:" << mode << " read-only:" << read_only <<'\n';
+    cout << '\n';
+    cout << "Syscall request: filesystem: open\n";
+    cout << "   path:" << path << '\n';
+    cout << "   flags:" << flags << " [read-only:" << read_only << "]\n";
+    cout << "   pid:" << pid << '\n';
+    cout << "   mode:" << mode << '\n';
+    // cout << '\n';
 
-    return false;
+    for(;;){
+
+        cout << "(p)ermit/(d)eny: ";
+
+        string action;
+        getline(cin, action);
+
+        if(action == "d"){
+            return false;
+        }else if(action == "p"){
+            return true;
+        }else{
+            cout << "Invalid action `" << action << "`\n";
+        }
+    }
 
 }
