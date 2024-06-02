@@ -20,6 +20,11 @@ int return_code = 69;
         pid_t pid = waitpid(-1, &status, 0); // the first argument being -1 means: wait for any child process
         // `waitpid` returns when a child's state changes, and that means: the child terminated; the child was stopped by a signal; or the child was resumed by a signal
 
+        if(pid == -1){
+            cout << "Unknown error\n";
+            exit(1);
+        }
+
         if(
             ( status>>8 == (SIGTRAP | (PTRACE_EVENT_CLONE<<8)) ) ||
             ( status>>8 == (SIGTRAP | (PTRACE_EVENT_FORK<<8))  ) ||
@@ -73,48 +78,6 @@ int return_code = 69;
             // generic syscall that we need to filter
 
         }else{
-            // // no idea how we got here
-
-            // // it seems that if we get to this point we cannot effect the syscall
-            // // eg, we cannot invalidate the syscall id
-            // // (this very well seems to be the case with the execve syscall)
-
-            // cout << "DEBUG: wtf, this must never happen; it's possible that the next syscall will be unblockable\n";
-
-            // // TODO? check if the syscall is an `execvp`, and if so just give up
-            // // however, it might be the case that we have fucked something up in the spawn code
-            // // and somehow given permission to run execvp?????
-
-            // if(!WIFSTOPPED(status)){
-            //     cerr << "wtf ** 2 A\n";
-            //     exit(1);
-            // }
-
-            // if(WSTOPSIG(status) != SIGTRAP){
-            //     cerr << "wtf ** 2 B\n";
-            //     exit(1);
-            // }
-
-
-
-
-            // // fuck this shit
-
-            // if(WIFSTOPPED(status)){
-            //     if(WSTOPSIG(status) != SIGTRAP){
-            //         cerr << "DEBUG: wtf\n";
-            //     }
-            //     ptrace(PTRACE_CONT, pid, NULL, NULL);
-            // }else{
-            //     cerr << "DEBUG: fucking impossible\n";
-            // }
-
-            // // ptrace(PTRACE_CONT, pid, NULL, NULL);
-
-            // continue;
-
-
-
 
             if(!WIFSTOPPED(status)){
                 // WIFSTOPPED(status): returns true if the child process was stopped by delivery of a signal; this is only possible if the call was done using WUNTRACED or when the child is being traced
@@ -122,7 +85,24 @@ int return_code = 69;
                 continue;
             }
 
-            // cout << "DEBUG: stop signal is " << WSTOPSIG(status) << '\n';
+            if(WSTOPSIG(status) == SIGTRAP){
+                PTRACE(PTRACE_CONT, pid, NULL, NULL);
+                continue;
+            }
+
+            // if(WSTOPSIG(status) == SIGUSR1){
+            //     KILL(pid, SIGCONT);
+            //     continue;
+            // }
+
+            // if(WSTOPSIG(status) == SIGCONT){
+            //     PTRACE(PTRACE_CONT, pid, NULL, NULL);
+            //     // KILL(pid, SIGCONT);
+            //     continue;
+            // }
+
+            time_t now = time(nullptr);
+            cout << "DEBUG: " << put_time(localtime(&now), "%T") << " -> stop signal is " << WSTOPSIG(status) << '\n';
 
             // KILL(pid, SIGCONT);
             PTRACE(PTRACE_CONT, pid, NULL, NULL);
