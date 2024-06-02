@@ -1,6 +1,6 @@
 
-#include "inc/macros.cpp"
+#include "functions_macros/macros.cpp"
 
-#include "inc/declarations.cpp"
+#include "functions_macros/declarations.cpp"
 
-#include "inc/functions_templates.cpp"
+#include "functions_macros/functions_templates.cpp"
