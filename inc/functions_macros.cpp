@@ -160,12 +160,18 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     // other flags can be bitwise OR-ed
     bool read_only = (flags | O_RDONLY);
 
-    // allow reading libraries
+    // allow generic stuff
 
     if(read_only){
-        if(path.starts_with("/usr/lib/")){
+
+        if(path.starts_with("/usr/lib/")){ // libraries
             return true;
         }
+
+        if(path == "/etc/ld.so.cache"){ // linker
+            return true;
+        }
+
     }
 
     // allow/deny if found in the "permanent" lists

@@ -6,6 +6,7 @@
 //  (altho this seems like the worst option since we would probably break some apps)
 
 int return_code = 69;
+// if this doesn't get changed, that must meanthat we made a mistake
 
 {
 
@@ -121,7 +122,11 @@ int return_code = 69;
                 continue;
             }
 
-            // TODO check the signal that caused the stop
+            // if( (WSTOPSIG(status) != SIGTRAP) && (WSTOPSIG(status) != SIGSTOP) && (WSTOPSIG(status) != SIGCHLD)){
+            //     cout << "DEBUG: stop signal is " << WSTOPSIG(status) << '\n';
+            //     // cout << "DEBUG: SIGTRAP is " << SIGTRAP << '\n';
+            //     // cout << "DEBUG: SIGSTOP is " << SIGTRAP << '\n';
+            // }
 
             PTRACE(PTRACE_CONT, pid, NULL, NULL);
             continue;
