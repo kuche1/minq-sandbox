@@ -5,7 +5,7 @@
 //  failed, or to only return the code of "spawner", or even to kill all processes if the "spawner" has died
 //  (altho this seems like the worst option since we would probably break some apps)
 
-int return_code = 1;
+int return_code = 69;
 
 {
 
@@ -26,7 +26,7 @@ int return_code = 1;
         ){
             // new process was created
 
-            cout << "DEBIG: new process was spawned\n";
+            // cout << "DEBIG: new process was spawned\n";
             processes_running += 1;
             PTRACE(PTRACE_CONT, pid, NULL, NULL);
             continue;
@@ -36,18 +36,26 @@ int return_code = 1;
         ){
             // process died
 
-            cout << "DEBUG: process died\n";
+            // cout << "DEBUG: process died\n";
             processes_running -= 1;
 
             unsigned long event_message;
             PTRACE(PTRACE_GETEVENTMSG, pid, NULL, &event_message);
 
             if(event_message){
-                // there's something wrong with the code that gets the return code
-                // so we'll only log the fact that the code is not 0
                 // note that it might be the case that the return code signifies something else
                 // rather than success/failure
                 processes_failed += 1;
+            }
+
+            if(pid == original_spawned_process_pid){
+                // there's something wrong with the code that gets the return code
+                // so we'll only use 0 or 1
+                if(event_message){
+                    return_code = 1;
+                }else{
+                    return_code = 0;
+                }
             }
 
             ptrace(PTRACE_CONT, pid, NULL, NULL);
@@ -87,19 +95,37 @@ int return_code = 1;
             // }
 
 
-            // fuck this shit
 
-            if(WIFSTOPPED(status)){
-                if(WSTOPSIG(status) != SIGTRAP){
-                    cerr << "DEBUG: wtf\n";
-                }
-            }else{
-                cerr << "DEBUG: fucking impossible\n";
+
+            // // fuck this shit
+
+            // if(WIFSTOPPED(status)){
+            //     if(WSTOPSIG(status) != SIGTRAP){
+            //         cerr << "DEBUG: wtf\n";
+            //     }
+            //     ptrace(PTRACE_CONT, pid, NULL, NULL);
+            // }else{
+            //     cerr << "DEBUG: fucking impossible\n";
+            // }
+
+            // // ptrace(PTRACE_CONT, pid, NULL, NULL);
+
+            // continue;
+
+
+
+
+            if(!WIFSTOPPED(status)){
+                // WIFSTOPPED(status): returns true if the child process was stopped by delivery of a signal; this is only possible if the call was done using WUNTRACED or when the child is being traced
+                // so, this was NOT caused by us, and using PTRACE_CONT will do nothing and fail
+                continue;
             }
 
-            ptrace(PTRACE_CONT, pid, NULL, NULL);
+            // TODO check the signal that caused the stop
 
+            PTRACE(PTRACE_CONT, pid, NULL, NULL);
             continue;
+
         }
 
         // get value of CPU regs
@@ -191,13 +217,5 @@ int return_code = 1;
 
     cout << "Failed processes: " << processes_failed << '\n';
     cout << "Blocked syscalls: " << syscalls_blocked << '\n';
-
-    // set return code
-
-    if(processes_failed == 0){
-        return_code = 0;
-    }else{
-        return_code = 1;
-    }
 
 }

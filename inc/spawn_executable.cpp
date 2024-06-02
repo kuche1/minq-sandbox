@@ -1,4 +1,6 @@
 
+pid_t original_spawned_process_pid = -1;
+
 {
 
     pid_t child = fork();
@@ -50,6 +52,13 @@
 
         PTRACE(PTRACE_CONT, child, NULL, NULL);
 
+        original_spawned_process_pid = child;
+
     }
 
+}
+
+if(original_spawned_process_pid == -1){
+    cout << "Unreachable, contact developer\n";
+    exit(1);
 }
