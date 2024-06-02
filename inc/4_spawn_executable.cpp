@@ -17,7 +17,7 @@ pid_t original_spawned_process_pid = -1;
         raise(SIGSTOP);
         // pause execution since TRACEME won't do that by itself
 
-        #include "inc/set_static_rules.cpp"
+        #include "spawn_executable/set_static_rules.cpp"
 
         EXECVP(executable, executable_args);
         // everything below this point should be unreachable
