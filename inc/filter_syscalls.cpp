@@ -111,6 +111,7 @@ int return_code = 1;
                         break;
 
                     case AF_INET:
+                    case AF_INET6:
                     case AF_DECnet:
                     case AF_ROSE:
                         syscall_allow = false;
