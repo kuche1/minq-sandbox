@@ -1,5 +1,9 @@
 
-// generic
+//////////////
+////////////////
+/////////////////// generic
+////////////////
+/////////////
 
 #define PATH_MAXLEN (4096+1) /* +1 for the ending \0 */
 
@@ -29,7 +33,12 @@
     #error Only 64bit is supported for now
 #endif
 
-// seccomp
+//////////////
+////////////////
+/////////////////// seccomp
+////////////////
+/////////////
+
 
 #define SECCOMP_ATTR_SET(...) { \
     if(seccomp_attr_set(__VA_ARGS__)){ \
@@ -51,14 +60,24 @@
     } \
 }
 
-// exec
+//////////////
+////////////////
+/////////////////// exec
+////////////////
+/////////////
+
 
 #define EXECVP(...) { \
     execvp(__VA_ARGS__); \
     ERR_FAILED_CALL("execvp"); \
 }
 
-// kill
+//////////////
+////////////////
+/////////////////// signals
+////////////////
+/////////////
+
 
 #define KILL(...) {\
     if(kill(__VA_ARGS__)) {\

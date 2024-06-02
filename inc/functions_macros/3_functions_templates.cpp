@@ -1,12 +1,20 @@
 
-// vector operations
+//////////////
+////////////////
+/////////////////// vector
+////////////////
+/////////////
 
 template<typename T>
 bool vec_contains(const vector<T>& vec, const T& element) {
     return find(vec.begin(), vec.end(), element) != vec.end();
 }
 
-// reading data of other processes
+//////////////
+////////////////
+/////////////////// getting data for other processes
+////////////////
+/////////////
 
 string process_read_cstr_as_string(pid_t pid, char* addr){
 
@@ -58,7 +66,11 @@ tuple<bool, string> process_get_fd_path(pid_t pid, int fd){
     return make_tuple(false, resolved_path);
 }
 
-// paths
+//////////////
+////////////////
+/////////////////// paths
+////////////////
+/////////////
 
 tuple<bool, string> resolve_path_at_cwd(string& path){
 
@@ -79,7 +91,11 @@ tuple<bool, string> resolve_path_at_cwd(string& path){
     return make_tuple(false, string(resolved_path));
 }
 
-// handling of syscalls
+//////////////
+////////////////
+/////////////////// handling of syscalls
+////////////////
+/////////////
 
 bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
 
@@ -187,8 +203,8 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     cout << "Syscall request: filesystem: open\n";
     cout << "   path:" << path << '\n';
     cout << "   flags:" << flags << " [read-only:" << read_only << "]\n";
-    cout << "   pid:" << pid << '\n';
     cout << "   mode:" << mode << '\n';
+    cout << "   pid:" << pid << '\n';
 
     for(;;){
 
