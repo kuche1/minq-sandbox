@@ -90,22 +90,11 @@ int return_code = 69;
                 continue;
             }
 
-            // if(WSTOPSIG(status) == SIGUSR1){
-            //     KILL(pid, SIGCONT);
-            //     continue;
-            // }
+            // time_t now = time(nullptr);
+            // cout << "DEBUG: " << put_time(localtime(&now), "%T") << " -> stop signal is " << WSTOPSIG(status) << '\n';
 
-            // if(WSTOPSIG(status) == SIGCONT){
-            //     PTRACE(PTRACE_CONT, pid, NULL, NULL);
-            //     // KILL(pid, SIGCONT);
-            //     continue;
-            // }
-
-            time_t now = time(nullptr);
-            cout << "DEBUG: " << put_time(localtime(&now), "%T") << " -> stop signal is " << WSTOPSIG(status) << '\n';
-
-            // KILL(pid, SIGCONT);
-            PTRACE(PTRACE_CONT, pid, NULL, NULL);
+            // forward the signal to the child
+            PTRACE(PTRACE_CONT, pid, NULL, WSTOPSIG(status));
 
             continue;
 

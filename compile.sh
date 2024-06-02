@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+HERE=$(dirname "$BASH_SOURCE")
+
 FLAGS_STANDARD='-std=c++23'
 
 FLAGS_STRICT='-Werror -Wextra -Wall -pedantic -Wfatal-errors'
@@ -14,4 +16,4 @@ FLAGS_OPTIMISATION="-Ofast"
 FLAGS="$FLAGS_STANDARD $FLAGS_STRICT $FLAGS_LIBRARIES $FLAGS_OPTIMISATION"
 
 clear
-g++ $FLAGS -o minq-sandbox minq-sandbox.cpp
+g++ $FLAGS -o "$HERE/minq-sandbox" "$HERE/minq-sandbox.cpp"
