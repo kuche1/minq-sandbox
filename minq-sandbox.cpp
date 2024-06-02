@@ -2,6 +2,8 @@
 // TODO
 //
 // make it so that instead of invalidating the syscall id we skip the execution and overwrite the return code
+//
+// make it so that syscall settings are presistent over sandbox restart
 
 #include "inc/includes_namespaces.cpp"
 

@@ -152,7 +152,6 @@ tuple<bool, string> resolve_path_at_cwd(string& path){
 
 // handling of syscalls
 
-// TODO we need to add the option to "permit and save" or "deny and save"
 bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
@@ -169,7 +168,7 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     static vector<string> permanent_blacklist_path;
 
     static vector<string> permanent_whitelist_path_prefix;
-    // TODO blacklist
+    static vector<string> permanent_blacklist_path_prefix;
 
     // read and sanitise parameter `path` from process memory
     // this can, in fact, be a file or a folder
@@ -247,6 +246,12 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
         }
     }
 
+    for(string& prefix : permanent_blacklist_path_prefix){
+        if(path.starts_with(prefix)){
+            return false;
+        }
+    }
+
     // ask user if he wants to permit/deny the syscall request
 
     cout << '\n';
@@ -255,11 +260,10 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     cout << "   flags:" << flags << " [read-only:" << read_only << "]\n";
     cout << "   pid:" << pid << '\n';
     cout << "   mode:" << mode << '\n';
-    // cout << '\n';
 
     for(;;){
 
-        cout << "(a):allow / (d):deny / (pa):permanently-allow-path / (pd):permanently-deny-path / (pap):permanently-allow-path-prefix > ";
+        cout << "(a):allow / (d):deny / (pa):permanently-allow / (pd):permanently-deny / (pap):permanently-allow-prefix / (pdp):permanently-deny-prefix > ";
 
         string action;
         getline(cin, action);
@@ -291,6 +295,20 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
 
             permanent_whitelist_path_prefix.push_back(prefix);
             return true;
+
+        }else if(action == "pdp"){
+            cout << "Enter the prefix that you want to permanently deny: ";
+
+            string prefix;
+            getline(cin, prefix);
+
+            if(!path.starts_with(prefix)){
+                cout << "Path `" << path << "` doesn't start with prefix `" << prefix << "`\n";
+                continue;
+            }
+
+            permanent_blacklist_path_prefix.push_back(prefix);
+            return false;
 
         }else{
             cout << "Invalid action `" << action << "`\n";
