@@ -20,7 +20,7 @@ pid_t original_spawned_process_pid = -1;
         #include "inc/set_static_rules.cpp"
 
         EXECVP(executable, executable_args);
-        // ecerything below this point should be unreachable
+        // everything below this point should be unreachable
 
     }else{
 
