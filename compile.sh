@@ -9,7 +9,7 @@ FLAGS_STANDARD='-std=c++23'
 FLAGS_STRICT='-Werror -Wextra -Wall -pedantic -Wfatal-errors'
 
 FLAGS_LIBRARIES='-lseccomp'
-# not that we can't have both `-static` and `-lseccomp`
+# note that we can't have both `-static` and `-lseccomp`
 
 FLAGS_OPTIMISATION=''
 # adding '-Ofast' seems to somehow fuck things up
