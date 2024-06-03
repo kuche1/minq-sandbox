@@ -7,7 +7,7 @@
 
 // TOD0
 //
-// make the file `functions_macros.cpp` less fucky
+// make it so that `parse_cmdline`, ... are actual functions, so that we know the variables used
 
 #include "inc/1_includes_namespaces.cpp"
 
