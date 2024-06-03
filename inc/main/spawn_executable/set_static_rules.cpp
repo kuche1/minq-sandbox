@@ -3,7 +3,7 @@
 // SCMP_ACT_LOG - allow but log
 // SCMP_ACT_TRACE(69) - trigger a ptrace breakpoint
 
-{
+void set_static_rules(bool networking_enable, bool filesystem_allow_all){
 
     // allow all syscalls by default
     scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_ALLOW);

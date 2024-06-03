@@ -1,4 +1,6 @@
 
+#include "spawn_executable/set_static_rules.cpp"
+
 pid_t spawn_executable(char* executable, char** executable_args, bool networking_enable, bool filesystem_allow_all){
 
     pid_t child = fork();
@@ -14,7 +16,7 @@ pid_t spawn_executable(char* executable, char** executable_args, bool networking
         raise(SIGSTOP);
         // pause execution since TRACEME won't do that by itself
 
-        #include "spawn_executable/set_static_rules.cpp"
+        set_static_rules(networking_enable, filesystem_allow_all);
 
         EXECVP(executable, executable_args);
         // everything below this point should be unreachable
