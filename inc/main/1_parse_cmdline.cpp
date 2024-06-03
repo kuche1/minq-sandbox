@@ -1,7 +1,13 @@
 
 tuple<char*, char**, bool, bool> parse_cmdline(int argc, char**argv){
 
-    //defaults
+    // flags // would be cool if all of these were constexpr
+    string flag_networking_enable = "--networking-enable";
+    string flag_filesystem_allow_all = "--filesystem-allow-all";
+    string flag_help = "--help";
+    vector<string> all_flags = {flag_networking_enable, flag_filesystem_allow_all, flag_help};
+
+    // defaults
     bool networkig_enable = false;
     bool filesystem_allow_all = false;
 
@@ -16,10 +22,19 @@ tuple<char*, char**, bool, bool> parse_cmdline(int argc, char**argv){
         for(int arg_idx=0; arg_idx<orig_argc; ++arg_idx){
             string arg = orig_argv[arg_idx];
 
-            if(arg == "--networking-enable"){
+            if(arg == flag_networking_enable){
                 networkig_enable = true;
-            }else if(arg == "--filesystem-allow-all"){
+
+            }else if(arg == flag_filesystem_allow_all){
                 filesystem_allow_all = true;
+
+            }else if(arg == flag_help){ // not the best, but good enough
+                cout << "Here is a list of all the flags:\n";
+                for(string& flag : all_flags){
+                    cout << flag << endl;
+                }
+                exit(0);
+
             }else{
                 break;
             }
