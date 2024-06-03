@@ -4,5 +4,3 @@
 #include "functions_templates/getting_data_from_other_processes.cpp"
 
 #include "functions_templates/filesystem.cpp"
-
-#include "functions_templates/syscall_handling.cpp"

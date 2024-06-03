@@ -1,4 +1,6 @@
 
+#include "filter_syscalls/syscall_handles.cpp"
+
 int filter_syscalls(pid_t first_child_pid){
 
     tuple<bool, int> return_code = make_tuple(true, 1);
