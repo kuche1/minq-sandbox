@@ -8,6 +8,8 @@
 // handle filesystem:delete syscalls
 // in fact, we don't seem to handle all open cases
 // https://linasm.sourceforge.net/docs/syscalls/filesystem.php
+//
+// handle `--help`
 
 // TOD0
 //
