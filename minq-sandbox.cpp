@@ -6,6 +6,8 @@
 // make it so that syscall settings are presistent over sandbox restart
 //
 // handle filesystem:delete syscalls
+// in fact, we don't seem to handle all open cases
+// https://linasm.sourceforge.net/docs/syscalls/filesystem.php
 
 // TOD0
 //
