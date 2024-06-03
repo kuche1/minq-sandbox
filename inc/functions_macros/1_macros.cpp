@@ -43,7 +43,6 @@
 ////////////////
 /////////////
 
-
 #define SECCOMP_ATTR_SET(...) { \
     if(seccomp_attr_set(__VA_ARGS__)){ \
         ERR_FAILED_CALL("seccomp_attr_set"); \
@@ -70,7 +69,6 @@
 ////////////////
 /////////////
 
-
 #define EXECVP(...) { \
     execvp(__VA_ARGS__); \
     ERR_FAILED_CALL("execvp"); \
@@ -81,7 +79,6 @@
 /////////////////// signals
 ////////////////
 /////////////
-
 
 #define KILL(...) {\
     if(kill(__VA_ARGS__)) {\
