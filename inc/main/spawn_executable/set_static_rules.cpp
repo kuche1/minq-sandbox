@@ -18,9 +18,17 @@
     SECCOMP_RULE_ADD(ctx, SCMP_ACT_TRACE(69), SCMP_SYS(open),   0);
     SECCOMP_RULE_ADD(ctx, SCMP_ACT_TRACE(69), SCMP_SYS(openat), 0);
 
-    // monitor socket creation
-    SECCOMP_RULE_ADD(ctx, SCMP_ACT_TRACE(69), SCMP_SYS(socket),     0);
-    SECCOMP_RULE_ADD(ctx, SCMP_ACT_TRACE(69), SCMP_SYS(socketpair), 0);
+    {
+        uint32_t action = SCMP_ACT_TRACE(69);
+
+        if(networking_enable){
+            action = SCMP_ACT_ALLOW;
+        }
+
+        // monitor socket creation
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(socket),     0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(socketpair), 0);
+    }
 
     // // harmless (by themselves) syscalls
     // SECCOMP_RULE_ADD(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read),  0);
