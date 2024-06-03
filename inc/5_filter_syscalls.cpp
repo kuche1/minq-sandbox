@@ -42,21 +42,16 @@ tuple<bool, int> return_code = make_tuple(true, 1);
             unsigned long event_message;
             PTRACE(PTRACE_GETEVENTMSG, pid, NULL, &event_message);
 
-            if(event_message){
+            int code = event_message >> 8;
+
+            if(code){
                 // note that it might be the case that the return code signifies something else
                 // rather than success/failure
                 processes_failed += 1;
             }
 
             if(pid == original_spawned_process_pid){
-                // TODO
-                // there's something wrong with the code that gets the return code
-                // so we'll only use 0 or 1 for now
-                if(event_message){
-                    return_code = make_tuple(false, 1);
-                }else{
-                    return_code = make_tuple(false, 0);
-                }
+                return_code = make_tuple(false, code);
             }
 
             ptrace(PTRACE_CONT, pid, NULL, NULL);
