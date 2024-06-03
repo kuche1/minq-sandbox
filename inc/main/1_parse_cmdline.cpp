@@ -1,8 +1,9 @@
 
-tuple<char*, char**, bool> parse_cmdline(int argc, char**argv){
+tuple<char*, char**, bool, bool> parse_cmdline(int argc, char**argv){
 
     //defaults
     bool networkig_enable = false;
+    bool filesystem_allow_all = false;
 
     // skip our name
     argc -= 1;
@@ -14,16 +15,18 @@ tuple<char*, char**, bool> parse_cmdline(int argc, char**argv){
 
         for(int arg_idx=0; arg_idx<orig_argc; ++arg_idx){
             string arg = orig_argv[arg_idx];
-            // cout << "DEBUG: " << arg << endl;
 
             if(arg == "--networking-enable"){
                 networkig_enable = true;
-                // do not pass this arg to the executable
-                argc -= 1;
-                argv += 1;
+            }else if(arg == "--filesystem-allow-all"){
+                filesystem_allow_all = true;
             }else{
                 break;
             }
+
+            // do not pass the arg to the executable
+            argc -= 1;
+            argv += 1;
         }
     }
 
@@ -35,5 +38,5 @@ tuple<char*, char**, bool> parse_cmdline(int argc, char**argv){
     char* executable = argv[0];
     char** executable_args = argv;
 
-    return make_tuple(executable, executable_args, networkig_enable);
+    return make_tuple(executable, executable_args, networkig_enable, filesystem_allow_all);
 }

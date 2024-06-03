@@ -14,9 +14,20 @@
     // do not send SIGSYS upon coming across an invalid syscall
     SECCOMP_ATTR_SET(ctx, SCMP_FLTATR_ACT_BADARCH, SCMP_ACT_ALLOW);
 
-    // monitor file openings
-    SECCOMP_RULE_ADD(ctx, SCMP_ACT_TRACE(69), SCMP_SYS(open),   0);
-    SECCOMP_RULE_ADD(ctx, SCMP_ACT_TRACE(69), SCMP_SYS(openat), 0);
+    // filesystem
+
+    {
+        uint32_t action = SCMP_ACT_TRACE(69);
+
+        if(filesystem_allow_all){
+            action = SCMP_ACT_ALLOW;
+        }
+
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(open),   0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(openat), 0);
+    }
+
+    // networking
 
     {
         uint32_t action = SCMP_ACT_TRACE(69);
@@ -25,7 +36,6 @@
             action = SCMP_ACT_ALLOW;
         }
 
-        // monitor socket creation
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(socket),     0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(socketpair), 0);
     }
