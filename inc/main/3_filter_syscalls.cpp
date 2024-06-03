@@ -1,7 +1,7 @@
 
-tuple<bool, int> return_code = make_tuple(true, 1);
+int filter_syscalls(pid_t first_child_pid){
 
-{
+    tuple<bool, int> return_code = make_tuple(true, 1);
 
     int processes_running = 1;
     int processes_failed = 0;
@@ -50,7 +50,7 @@ tuple<bool, int> return_code = make_tuple(true, 1);
                 processes_failed += 1;
             }
 
-            if(pid == original_spawned_process_pid){
+            if(pid == first_child_pid){
                 return_code = make_tuple(false, code);
             }
 
@@ -180,5 +180,15 @@ tuple<bool, int> return_code = make_tuple(true, 1);
 
     cout << "Failed processes: " << processes_failed << '\n';
     cout << "Blocked syscalls: " << syscalls_blocked << '\n';
+
+    // return
+
+    auto [failure, code] = return_code;
+    if(failure){
+        cerr << "Could not determine return code of original child";
+        return 1;
+    }
+
+    return code;
 
 }

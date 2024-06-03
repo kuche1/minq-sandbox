@@ -1,14 +1,11 @@
 
-pid_t original_spawned_process_pid = -1;
-
-{
+pid_t spawn_executable(char* executable, char** executable_args){
 
     pid_t child = fork();
 
     if(child < 0){
 
-        cerr << "Could not fork\n";
-        exit(1);
+        ERR_FAILED_CALL("fork");
 
     }else if(child == 0){
 
@@ -52,13 +49,8 @@ pid_t original_spawned_process_pid = -1;
 
         PTRACE(PTRACE_CONT, child, NULL, NULL);
 
-        original_spawned_process_pid = child;
+        return child;
 
     }
 
-}
-
-if(original_spawned_process_pid == -1){
-    cout << "Unreachable, contact developer\n";
-    exit(1);
 }

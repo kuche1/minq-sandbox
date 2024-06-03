@@ -13,13 +13,4 @@
 
 #include "inc/2_functions_macros.cpp"
 
-int main(int argc, char *argv[]){
-
-    #include "inc/3_parse_cmdline.cpp"
-
-    #include "inc/4_spawn_executable.cpp"
-
-    #include "inc/5_filter_syscalls.cpp"
-
-    #include "inc/6_return.cpp"
-}
+#include "inc/3_main.cpp"
