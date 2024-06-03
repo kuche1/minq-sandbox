@@ -1,4 +1,6 @@
 
+#include "filter_syscalls/syscall_names.cpp"
+
 #include "filter_syscalls/syscall_handles.cpp"
 
 int filter_syscalls(pid_t first_child_pid){
@@ -166,7 +168,8 @@ int filter_syscalls(pid_t first_child_pid){
 
             syscalls_blocked += 1;
 
-            cout << "Blocked syscall " << syscall_id << '\n';
+            const char* syscall_name = get_syscall_name(syscall_id);
+            cout << "Blocked syscall " << syscall_id << ": " << syscall_name << endl;
 
             CPU_REG_RW_SYSCALL_ID(regs) = -1; // invalidate the syscall by changing the ID
 
