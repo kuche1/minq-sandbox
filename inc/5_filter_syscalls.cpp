@@ -1,6 +1,5 @@
 
-int return_code = 69;
-// if this doesn't get changed, that must meanthat we made a mistake
+tuple<bool, int> return_code = make_tuple(true, 1);
 
 {
 
@@ -15,10 +14,9 @@ int return_code = 69;
         // `waitpid` returns when a child's state changes, and that means: the child terminated; the child was stopped by a signal; or the child was resumed by a signal
 
         if(pid == -1){
-            // TODO this should not be happening
+            // TODO what is causing this?
             cerr << "DEBUG: wtf, pid==-1; processes_running:" << processes_running << "\n";
-            exit(1);
-            // continue;
+            break;
         }
 
         if(
@@ -51,12 +49,13 @@ int return_code = 69;
             }
 
             if(pid == original_spawned_process_pid){
+                // TODO
                 // there's something wrong with the code that gets the return code
-                // so we'll only use 0 or 1
+                // so we'll only use 0 or 1 for now
                 if(event_message){
-                    return_code = 1;
+                    return_code = make_tuple(false, 1);
                 }else{
-                    return_code = 0;
+                    return_code = make_tuple(false, 0);
                 }
             }
 

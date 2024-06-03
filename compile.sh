@@ -11,7 +11,8 @@ FLAGS_STRICT='-Werror -Wextra -Wall -pedantic -Wfatal-errors'
 FLAGS_LIBRARIES='-lseccomp'
 # not that we can't have both `-static` and `-lseccomp`
 
-FLAGS_OPTIMISATION="-Ofast"
+FLAGS_OPTIMISATION=''
+# adding '-Ofast' seems to somehow fuck things up
 
 FLAGS="$FLAGS_STANDARD $FLAGS_STRICT $FLAGS_LIBRARIES $FLAGS_OPTIMISATION"
 

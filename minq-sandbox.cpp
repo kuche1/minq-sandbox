@@ -21,5 +21,5 @@ int main(int argc, char *argv[]){
 
     #include "inc/5_filter_syscalls.cpp"
 
-    return return_code;
+    #include "inc/6_return.cpp"
 }
