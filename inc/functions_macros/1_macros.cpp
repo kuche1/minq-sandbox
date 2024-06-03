@@ -8,7 +8,7 @@
 #define PATH_MAXLEN (4096+1) /* +1 for the ending \0 */
 
 #define ERR_FAILED_CALL(to_what) { \
-    cout << "Failed call to `" << to_what << "` in file `" << __FILE__ << "` at line " << __LINE__ << '\n'; \
+    cerr << "Failed call to `" << to_what << "` in file `" << __FILE__ << "` at line " << __LINE__ << '\n'; \
     exit(1); \
 }
 
