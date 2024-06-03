@@ -70,8 +70,18 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     // `flags` must include one of these: O_RDONLY (read only), O_WRONLY (write only), O_RDWR (read and write)
     // other flags can be bitwise OR-ed
     bool read_only = (flags | O_RDONLY);
+    bool write_only = (flags | O_WRONLY);
+    bool read_write = (flags | O_RDWR);
 
     // allow generic stuff
+
+    if(path == "/dev/tty"){ // using the terminal (as in printing, not executing commands)
+        return true;
+    }
+
+    if(path == "/dev/null"){ // the "nothing" file
+        return true;
+    }
 
     if(read_only){
 
@@ -110,7 +120,7 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     cout << '\n';
     cout << "Syscall request: filesystem: open\n";
     cout << "   path:" << path << '\n';
-    cout << "   flags:" << flags << " [read-only:" << read_only << "]\n";
+    cout << "   flags:" << flags << " [read-only:" << read_only << " write-only:" << write_only << " read-write:" << read_write << "]\n";
     cout << "   mode:" << mode << '\n';
     cout << "   pid:" << pid << '\n';
 
