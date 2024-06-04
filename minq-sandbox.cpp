@@ -2,12 +2,11 @@
 // TODO
 //
 // the filesystem user interface sucks
+//     (possible fix) add option to remember across sandbox reboots OR/AND add option to allow certain dirs ar cmdline
 
 // TOD0
 //
 // make it so that instead of invalidating the syscall id we skip the execution and overwrite the return code
-//
-// make it so that syscall settings are presistent over sandbox restart
 //
 // handle filesystem:delete syscalls
 // in fact, we don't seem to handle all open cases
