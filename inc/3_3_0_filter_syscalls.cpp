@@ -169,7 +169,8 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             default:
             {
 
-                cout << "Unknown syscall: " << syscall_id << endl;
+                cerr << "Unknown syscall: " << syscall_id << endl;
+                exit(1);
 
             } break;
 
