@@ -9,6 +9,7 @@
 //
 // I should be taking into account children's PWD
 // readlink -f /proc/<pid>/pwd
+// https://stackoverflow.com/questions/23183093/how-to-resolve-a-file-path
 
 // TOD0
 //
