@@ -8,6 +8,8 @@ typedef struct{
     bool filesystem_allow_all = false;
     bool filesystem_ask = false;
     vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name
+
+    bool color = false;
 } Sandbox_settings;
 
 Sandbox_settings parse_cmdline(int argc, char**argv){
@@ -17,7 +19,8 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
     string flag_filesystem_allow_all = "--filesystem-allow-all";
     string flag_help = "--help";
     string flag_filesystem_ask = "--filesystem-ask";
-    vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help};
+    string flag_color = "--color";
+    vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help, flag_filesystem_ask, flag_color};
     string flag_node_allow = "--node-allow:";
     vector<string> flags_prefix = {flag_node_allow};
 
@@ -60,6 +63,10 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
             }else if(arg == flag_filesystem_ask){
 
                 settings.filesystem_ask = true;
+
+            }else if(arg == flag_color){
+
+                settings.color = true;
             
             // flags that are used as prefixes
 

@@ -183,7 +183,18 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             syscalls_blocked += 1;
 
             const char* syscall_name = get_syscall_name(syscall_id);
-            cout << "Blocked syscall " << syscall_id << ": " << syscall_name << ": " << syscall_info << endl;
+
+            if(settings.color){
+                cout << "\033[33m"; // colors - https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+            }
+
+            cout << "Blocked syscall " << syscall_id << ": " << syscall_name << ": " << syscall_info;
+
+            if(settings.color){
+                cout << "\033[0m";
+            }
+
+            cout << endl;
 
             CPU_REG_RW_SYSCALL_ID(regs) = -1; // invalidate the syscall by changing the ID
 
