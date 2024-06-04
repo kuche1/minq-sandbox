@@ -5,7 +5,7 @@
 ////////////////
 /////////////
 
-bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
+bool handle_syscall_openat(vector<string>& filesystem_allowed_folders, pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
 
@@ -112,6 +112,16 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     for(string& prefix : permanent_blacklist_path_prefix){
         if(path.starts_with(prefix)){
             return false;
+        }
+    }
+
+    // allow if in `filesystem_allowed_folders`
+
+    for(string& folder : filesystem_allowed_folders){
+        if(path == folder){ // TODO it might be the case that the path is a file
+            return true;
+        }else if(path.starts_with(folder + "/")){
+            return true;
         }
     }
 

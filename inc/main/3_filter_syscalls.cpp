@@ -3,7 +3,7 @@
 
 #include "filter_syscalls/syscall_handles.cpp"
 
-int filter_syscalls(pid_t first_child_pid){
+int filter_syscalls(pid_t first_child_pid, vector<string>& filesystem_allowed_folders){
 
     tuple<bool, int> return_code = make_tuple(true, 1);
 
@@ -143,7 +143,7 @@ int filter_syscalls(pid_t first_child_pid){
                 int flags = CPU_REG_R_SYSCALL_ARG1(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG2(regs);
 
-                syscall_allow = handle_syscall_openat(pid, dir_fd, filename, flags, mode);
+                syscall_allow = handle_syscall_openat(filesystem_allowed_folders, pid, dir_fd, filename, flags, mode);
 
             } break;
 
@@ -156,7 +156,7 @@ int filter_syscalls(pid_t first_child_pid){
                 int flags = CPU_REG_R_SYSCALL_ARG2(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG3(regs);
 
-                syscall_allow = handle_syscall_openat(pid, dir_fd, filename, flags, mode);
+                syscall_allow = handle_syscall_openat(filesystem_allowed_folders, pid, dir_fd, filename, flags, mode);
 
             } break;
 

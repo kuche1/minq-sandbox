@@ -23,3 +23,13 @@ tuple<bool, string> resolve_path_at_cwd(string& path){
 
     return make_tuple(false, string(resolved_path));
 }
+
+bool is_folder(string& path){
+    const std::filesystem::path as_path_obj(path);
+
+    if(std::filesystem::is_directory(as_path_obj)){
+        return true;
+    }
+
+    return false;
+}

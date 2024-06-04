@@ -2,7 +2,8 @@
 // TODO
 //
 // the filesystem user interface sucks
-//     (possible fix) add option to remember across sandbox reboots OR/AND add option to allow certain dirs as cmdline
+//
+// add flag that toggles asking the user for each file
 
 // TOD0
 //
@@ -11,6 +12,8 @@
 // handle filesystem:delete syscalls
 // in fact, we don't seem to handle all open cases
 // https://linasm.sourceforge.net/docs/syscalls/filesystem.php
+//
+// add the option to save all filesystem choices in a folder
 
 // TOD1
 //
