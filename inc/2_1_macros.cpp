@@ -7,8 +7,15 @@
 
 #define PATH_MAXLEN (4096+1) /* +1 for the ending \0 */
 
+#define CERR_MSG "file `" << __FILE__ "` line " << __LINE__
+
 #define ERR_FAILED_CALL(to_what) { \
-    cerr << "Failed call to `" << to_what << "` in file `" << __FILE__ << "` at line " << __LINE__ << '\n'; \
+    cerr << "Failed call to `" << to_what << "`: " CERR_MSG << endl; \
+    exit(1); \
+}
+
+#define ERR_UNREACHABLE() { \
+    cerr << "Unreachable code reached: " CERR_MSG << endl; \
     exit(1); \
 }
 
