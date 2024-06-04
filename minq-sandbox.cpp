@@ -1,17 +1,15 @@
 
 // TODO
 //
-// the filesystem user interface sucks
-//
 // the project structure sucks
-
-// TOD0
-//
-// make it so that instead of invalidating the syscall id we skip the execution and overwrite the return code
 //
 // handle filesystem:delete syscalls
 // in fact, we don't seem to handle all open cases
 // https://linasm.sourceforge.net/docs/syscalls/filesystem.php
+
+// TOD0
+//
+// make it so that instead of invalidating the syscall id we skip the execution and overwrite the return code
 //
 // add the option to save all filesystem choices in a folder
 
