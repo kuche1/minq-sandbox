@@ -7,7 +7,7 @@
 
 tuple<bool, string> resolve_path_at_cwd(string& path){
 
-    char resolved_path[PATH_MAXLEN];
+    char resolved_path[PATH_MAXLEN] = {0};
     errno = 0;
 
     if(!realpath(path.c_str(), resolved_path)){
