@@ -218,10 +218,9 @@ pair<bool, string> handle_syscall_openat(Sandbox_settings& settings, pid_t pid, 
 
     }
 
+    // we actually won't be parsing the flags since it's too much of a pain for the end user
+    // to have to specify all the files AND the flags
     {
-        // we actually won't be parsing the flags since it's too much of a pain for the end user
-        // to have to specify all the files AND the flags
-
         // // parse parameter `flags`
 
         // // `flags` must include one of these: O_RDONLY (read only), O_WRONLY (write only), O_RDWR (read and write)
