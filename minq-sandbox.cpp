@@ -12,6 +12,8 @@
 // TOD0
 //
 // if the sandbox has any questions to ask: save the terminal buffer, ask the question, restore the buffer
+// https://unix.stackexchange.com/questions/243237/how-to-save-restore-terminal-output
+// sounds cool, but is probably a bad idea
 
 #include "inc/1_includes_namespaces.cpp"
 
