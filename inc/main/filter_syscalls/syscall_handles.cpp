@@ -13,7 +13,7 @@ bool handle_syscall_openat(pid_t pid, int dir_fd, char *pidmem_filename, int fla
     // probably file doesn't exist
     // denying the syscall would be the safer choice, however I've seen apps break because of this
     // as the app crashes thinkin that the OS doesnt support the `open` syscall (as of writing this the
-    // method for invalidating syscalls that we use is to ivalidate the syscall id)
+    // method for invalidating syscalls that we use is to ivalidate the syscall id) (example: python3)
 
     // "permanent" settings
 
