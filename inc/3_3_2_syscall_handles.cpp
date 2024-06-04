@@ -95,7 +95,6 @@ bool is_node_allowed(Sandbox_settings& settings, string path){
 
         // ask user if he wants to permit/deny the syscall request
 
-        // TODO we could make this colorful
         cout << "Syscall request: filesystem: open `" << path << "`\n";
 
         for(;;){

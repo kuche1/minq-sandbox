@@ -1,15 +1,29 @@
 
 typedef struct{
+
+    // executable
+
     char* executable = nullptr;
     char** executable_args = nullptr;
 
+    // networking
+
     bool networking_enable = false;
+
+    // filesystem
 
     bool filesystem_allow_all = false;
     bool filesystem_ask = false;
     vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name
 
+    // color
+    // you can find some colors here - https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+
     bool color = false;
+    string color_reset = "\033[0m";
+    string color_block_syscall = "\033[33m";
+    // string color_user_interaction = "\033[32m";
+
 } Sandbox_settings;
 
 Sandbox_settings parse_cmdline(int argc, char**argv){
