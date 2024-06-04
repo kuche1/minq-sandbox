@@ -5,7 +5,7 @@
 ////////////////
 /////////////
 
-tuple<bool, string> resolve_path_at_cwd(string& path){
+tuple<bool, string> resolve_path_at_cwd(const string& path){
 
     char resolved_path[PATH_MAXLEN] = {0};
     errno = 0;
