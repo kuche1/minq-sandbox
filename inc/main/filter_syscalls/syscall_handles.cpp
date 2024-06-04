@@ -117,10 +117,16 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
 
     // allow if in `filesystem_allowed_folders`
 
-    for(string& folder : settings.filesystem_allowed_folders){
-        if(path == folder){ // TODO it might be the case that the path is a file
+    for(string folder : settings.filesystem_allowed_folders){
+        if(path == folder){ // TODO it might be the case that `path` is a file
             return true;
-        }else if(path.starts_with(folder + "/")){
+        }
+
+        if(!folder.ends_with("/")){
+            folder += "/";
+        }
+
+        if(path.starts_with(folder)){
             return true;
         }
     }
