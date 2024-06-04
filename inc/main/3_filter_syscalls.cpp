@@ -160,6 +160,13 @@ int filter_syscalls(pid_t first_child_pid){
 
             } break;
 
+            default:
+            {
+
+                cout << "Unknown syscall: " << syscall_id << endl;
+
+            } break;
+
         }
 
         // block or allow the syscall
