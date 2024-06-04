@@ -2,7 +2,7 @@
 // TODO
 //
 // the filesystem user interface sucks
-//     (possible fix) add option to remember across sandbox reboots OR/AND add option to allow certain dirs ar cmdline
+//     (possible fix) add option to remember across sandbox reboots OR/AND add option to allow certain dirs as cmdline
 
 // TOD0
 //
