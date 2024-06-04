@@ -7,11 +7,11 @@
 
 int main(int argc, char *argv[]){
 
-    auto [executable, executable_args, networking_enable, filesystem_allow_all, filesystem_allowed_folders] = parse_cmdline(argc, argv);
+    Sandbox_settings settings = parse_cmdline(argc, argv);
 
-    pid_t first_child_pid = spawn_executable(executable, executable_args, networking_enable, filesystem_allow_all);
+    pid_t first_child_pid = spawn_executable(settings);
 
-    int return_code = filter_syscalls(first_child_pid, filesystem_allowed_folders);
+    int return_code = filter_syscalls(settings, first_child_pid);
 
     return return_code;
 }

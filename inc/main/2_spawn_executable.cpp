@@ -1,7 +1,7 @@
 
 #include "spawn_executable/set_static_rules.cpp"
 
-pid_t spawn_executable(char* executable, char** executable_args, bool networking_enable, bool filesystem_allow_all){
+pid_t spawn_executable(Sandbox_settings& settings){
 
     pid_t child = fork();
 
@@ -16,9 +16,9 @@ pid_t spawn_executable(char* executable, char** executable_args, bool networking
         raise(SIGSTOP);
         // pause execution since TRACEME won't do that by itself
 
-        set_static_rules(networking_enable, filesystem_allow_all);
+        set_static_rules(settings);
 
-        EXECVP(executable, executable_args);
+        EXECVP(settings.executable, settings.executable_args);
         // everything below this point should be unreachable
 
     }else{

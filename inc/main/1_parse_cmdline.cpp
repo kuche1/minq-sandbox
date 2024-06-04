@@ -1,18 +1,28 @@
 
-tuple<char*, char**, bool, bool, vector<string>> parse_cmdline(int argc, char**argv){
+typedef struct{
+    char* executable = nullptr;
+    char** executable_args = nullptr;
+
+    bool networking_enable = false;
+
+    bool filesystem_allow_all = false;
+    bool filesystem_ask = false;
+    vector<string> filesystem_allowed_folders = {};
+} Sandbox_settings;
+
+Sandbox_settings parse_cmdline(int argc, char**argv){
 
     // flags // would be cool if all of these were constexpr
     string flag_networking_enable = "--networking-enable";
     string flag_filesystem_allow_all = "--filesystem-allow-all";
     string flag_help = "--help";
-    string flag_folder_allow = "--folder_allow:";
+    string flag_filesystem_ask = "--filesystem-ask";
     vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help};
+    string flag_folder_allow = "--folder-allow:";
     vector<string> flags_prefix = {flag_folder_allow};
 
     // defaults
-    bool networkig_enable = false;
-    bool filesystem_allow_all = false;
-    vector<string> filesystem_allowed_folders;
+    Sandbox_settings settings;
 
     // skip our name
     argc -= 1;
@@ -28,10 +38,10 @@ tuple<char*, char**, bool, bool, vector<string>> parse_cmdline(int argc, char**a
             // flags that exactly match
 
             if(arg == flag_networking_enable){
-                networkig_enable = true;
+                settings.networking_enable = true;
 
             }else if(arg == flag_filesystem_allow_all){
-                filesystem_allow_all = true;
+                settings.filesystem_allow_all = true;
 
             }else if(arg == flag_help){ // not the best, but good enough
 
@@ -46,6 +56,10 @@ tuple<char*, char**, bool, bool, vector<string>> parse_cmdline(int argc, char**a
                 }
             
                 exit(0);
+            
+            }else if(arg == flag_filesystem_ask){
+
+                settings.filesystem_ask = true;
             
             // flags that are used as prefixes
 
@@ -64,7 +78,7 @@ tuple<char*, char**, bool, bool, vector<string>> parse_cmdline(int argc, char**a
                     exit(1);
                 }
 
-                filesystem_allowed_folders.push_back(resolved);
+                settings.filesystem_allowed_folders.push_back(resolved);
 
             // ...
 
@@ -83,8 +97,8 @@ tuple<char*, char**, bool, bool, vector<string>> parse_cmdline(int argc, char**a
         exit(1);
     }
 
-    char* executable = argv[0];
-    char** executable_args = argv;
+    settings.executable = argv[0];
+    settings.executable_args = argv;
 
-    return make_tuple(executable, executable_args, networkig_enable, filesystem_allow_all, filesystem_allowed_folders);
+    return settings;
 }

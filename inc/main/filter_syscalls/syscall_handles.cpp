@@ -5,7 +5,7 @@
 ////////////////
 /////////////
 
-bool handle_syscall_openat(vector<string>& filesystem_allowed_folders, pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
+bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
 
@@ -117,12 +117,18 @@ bool handle_syscall_openat(vector<string>& filesystem_allowed_folders, pid_t pid
 
     // allow if in `filesystem_allowed_folders`
 
-    for(string& folder : filesystem_allowed_folders){
+    for(string& folder : settings.filesystem_allowed_folders){
         if(path == folder){ // TODO it might be the case that the path is a file
             return true;
         }else if(path.starts_with(folder + "/")){
             return true;
         }
+    }
+
+    // check if we should ask the user or refuse access
+
+    if(!settings.filesystem_ask){
+        return false;
     }
 
     // ask user if he wants to permit/deny the syscall request

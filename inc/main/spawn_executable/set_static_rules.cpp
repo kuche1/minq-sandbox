@@ -3,7 +3,7 @@
 // SCMP_ACT_LOG - allow but log
 // SCMP_ACT_TRACE(69) - trigger a ptrace breakpoint
 
-void set_static_rules(bool networking_enable, bool filesystem_allow_all){
+void set_static_rules(Sandbox_settings& settings){
 
     // allow all syscalls by default
     scmp_filter_ctx ctx = seccomp_init(SCMP_ACT_ALLOW);
@@ -19,7 +19,7 @@ void set_static_rules(bool networking_enable, bool filesystem_allow_all){
     {
         uint32_t action = SCMP_ACT_TRACE(69);
 
-        if(filesystem_allow_all){
+        if(settings.filesystem_allow_all){
             action = SCMP_ACT_ALLOW;
         }
 
@@ -32,7 +32,7 @@ void set_static_rules(bool networking_enable, bool filesystem_allow_all){
     {
         uint32_t action = SCMP_ACT_TRACE(69);
 
-        if(networking_enable){
+        if(settings.networking_enable){
             action = SCMP_ACT_ALLOW;
         }
 

@@ -3,7 +3,7 @@
 //
 // the filesystem user interface sucks
 //
-// add flag that toggles asking the user for each file
+// the project structure sucks
 
 // TOD0
 //
