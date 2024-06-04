@@ -7,7 +7,7 @@ typedef struct{
 
     bool filesystem_allow_all = false;
     bool filesystem_ask = false;
-    vector<string> filesystem_allowed_folders = {};
+    vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name
 } Sandbox_settings;
 
 Sandbox_settings parse_cmdline(int argc, char**argv){
@@ -18,8 +18,8 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
     string flag_help = "--help";
     string flag_filesystem_ask = "--filesystem-ask";
     vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help};
-    string flag_folder_allow = "--folder-allow:";
-    vector<string> flags_prefix = {flag_folder_allow};
+    string flag_node_allow = "--node-allow:";
+    vector<string> flags_prefix = {flag_node_allow};
 
     // defaults
     Sandbox_settings settings;
@@ -50,7 +50,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     cout << flag << endl;
                 }
             
-                cout << "Here is a list of the flags that require an argument (example: " << flag_folder_allow << "/home/user123/data):\n";
+                cout << "Here is a list of the flags that require an argument (example: " << flag_node_allow << "/home/user123/data):\n";
                 for(string& flag : flags_prefix){
                     cout << flag << endl;
                 }
@@ -63,9 +63,9 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
             
             // flags that are used as prefixes
 
-            }else if(arg.starts_with(flag_folder_allow)){
+            }else if(arg.starts_with(flag_node_allow)){
 
-                arg = arg.substr(flag_folder_allow.size(), arg.size() - flag_folder_allow.size());
+                arg = arg.substr(flag_node_allow.size(), arg.size() - flag_node_allow.size());
 
                 auto [failure, resolved] = resolve_path_at_cwd(arg);
                 if(failure){
@@ -73,12 +73,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     exit(1);
                 }
 
-                if(!is_folder(resolved)){
-                    cerr << "Path is not a folder `" << resolved << "`\n";
-                    exit(1);
-                }
-
-                settings.filesystem_allowed_folders.push_back(resolved);
+                settings.filesystem_allowed_nodes.push_back(resolved);
 
             // ...
 

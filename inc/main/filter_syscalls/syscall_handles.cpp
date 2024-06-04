@@ -5,7 +5,7 @@
 ////////////////
 /////////////
 
-bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
+pair<bool, string> handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, char *pidmem_filename, int flags, mode_t mode){
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
 
@@ -32,7 +32,7 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
 
         auto [failed, resolved_path] = resolve_path_at_cwd(path);
         if(failed){
-            return ret_value_if_cant_resolve_path;
+            return make_pair(ret_value_if_cant_resolve_path, path);
         }
         path = resolved_path;
     
@@ -42,7 +42,7 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
 
             auto [failed, resolved_path] = resolve_path_at_cwd(path);
             if(failed){
-                return ret_value_if_cant_resolve_path;
+                return make_pair(ret_value_if_cant_resolve_path, path);
             }
             path = resolved_path;
 
@@ -50,7 +50,7 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
 
             auto [failed, fd_path] = process_get_fd_path(pid, dir_fd);
             if(failed){
-                return ret_value_if_cant_resolve_path;
+                return make_pair(ret_value_if_cant_resolve_path, path);
             }
 
             // we know that `path` doesn't start with `/`, so the only thing to check is `fd_path`
@@ -76,21 +76,21 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
     // allow generic stuff
 
     if(path == "/dev/tty"){ // using the terminal (as in printing, not executing commands)
-        return true;
+        return make_pair(true, path);
     }
 
     if(path == "/dev/null"){ // the "nothing" file
-        return true;
+        return make_pair(true, path);
     }
 
     if(read_only){
 
         if(path.starts_with("/usr/lib/")){ // libraries
-            return true;
+            return make_pair(true, path);
         }
 
         if(path == "/etc/ld.so.cache"){ // linker
-            return true;
+            return make_pair(true, path);
         }
 
     }
@@ -98,43 +98,48 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
     // allow/deny if found in the "permanent" lists
 
     if(vec_contains(permanent_whitelist_path, path)){
-        return true;
+        return make_pair(true, path);
     }else if(vec_contains(permanent_blacklist_path, path)){
-        return false;
+        return make_pair(false, path);
     }
 
     for(string& prefix : permanent_whitelist_path_prefix){
         if(path.starts_with(prefix)){
-            return true;
+            return make_pair(true, path);
         }
     }
 
     for(string& prefix : permanent_blacklist_path_prefix){
         if(path.starts_with(prefix)){
-            return false;
+            return make_pair(false, path);
         }
     }
 
-    // allow if in `filesystem_allowed_folders`
+    // allow whitelisted nodes
 
-    for(string folder : settings.filesystem_allowed_folders){
-        if(path == folder){ // TODO it might be the case that `path` is a file
-            return true;
+    for(string node : settings.filesystem_allowed_nodes){
+
+        // if `path` is a file or a folder, and is the same as `node`
+
+        if(path == node){
+            return make_pair(true, path);
         }
 
-        if(!folder.ends_with("/")){
-            folder += "/";
+        // if `path` is a file, and is in a folder `node`
+
+        if(!node.ends_with("/")){
+            node += "/";
         }
 
-        if(path.starts_with(folder)){
-            return true;
+        if(path.starts_with(node)){
+            return make_pair(true, path);
         }
     }
 
     // check if we should ask the user or refuse access
 
     if(!settings.filesystem_ask){
-        return false;
+        return make_pair(false, path);
     }
 
     // ask user if he wants to permit/deny the syscall request
@@ -154,18 +159,18 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
         getline(cin, action);
 
         if(action == "a"){
-            return true;
+            return make_pair(true, path);
 
         }else if(action == "d"){
-            return false;
+            return make_pair(false, path);
 
         }else if(action == "pa"){
             permanent_whitelist_path.push_back(path);
-            return true;
+            return make_pair(true, path);
 
         }else if(action == "pd"){
             permanent_blacklist_path.push_back(path);
-            return false;
+            return make_pair(false, path);
 
         }else if(action == "pap"){
             cout << "Enter the prefix that you want to permanently allow: ";
@@ -179,7 +184,7 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
             }
 
             permanent_whitelist_path_prefix.push_back(prefix);
-            return true;
+            return make_pair(true, path);
 
         }else if(action == "pdp"){
             cout << "Enter the prefix that you want to permanently deny: ";
@@ -193,7 +198,7 @@ bool handle_syscall_openat(Sandbox_settings& settings, pid_t pid, int dir_fd, ch
             }
 
             permanent_blacklist_path_prefix.push_back(prefix);
-            return false;
+            return make_pair(false, path);
 
         }else{
             cout << "Invalid action `" << action << "`\n";

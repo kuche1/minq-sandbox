@@ -100,6 +100,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
         long syscall_id = CPU_REG_RW_SYSCALL_ID(regs);
         bool syscall_allow = false;
+        string syscall_info = "no info available";
 
         switch(syscall_id){
 
@@ -116,6 +117,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                     case AF_BRIDGE:
                     case AF_NETLINK:
                         syscall_allow = true;
+                        syscall_info = "creation of a socket, but not for contacting the outside world";
                         break;
 
                     case AF_INET:
@@ -123,6 +125,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                     case AF_DECnet:
                     case AF_ROSE:
                         syscall_allow = false;
+                        syscall_info = "creation of a socket for contacting the outside world";
                         break;
 
                     default:
@@ -143,7 +146,9 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 int flags = CPU_REG_R_SYSCALL_ARG1(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG2(regs);
 
-                syscall_allow = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
+                auto [tmp_syscall_allow, tmp_syscall_info] = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
+                syscall_allow = tmp_syscall_allow;
+                syscall_info = tmp_syscall_info;
 
             } break;
 
@@ -156,7 +161,9 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 int flags = CPU_REG_R_SYSCALL_ARG2(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG3(regs);
 
-                syscall_allow = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
+                auto [tmp_syscall_allow, tmp_syscall_info] = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
+                syscall_allow = tmp_syscall_allow;
+                syscall_info = tmp_syscall_info;
 
             } break;
 
@@ -176,7 +183,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             syscalls_blocked += 1;
 
             const char* syscall_name = get_syscall_name(syscall_id);
-            cout << "Blocked syscall " << syscall_id << ": " << syscall_name << endl;
+            cout << "Blocked syscall " << syscall_id << ": " << syscall_name << ": " << syscall_info << endl;
 
             CPU_REG_RW_SYSCALL_ID(regs) = -1; // invalidate the syscall by changing the ID
 

@@ -6,7 +6,7 @@ HERE=$(dirname "$BASH_SOURCE")
 
 FLAGS_STANDARD='-std=c++23'
 
-FLAGS_STRICT='-Werror -Wextra -Wall -pedantic -Wfatal-errors'
+FLAGS_STRICT='-Werror -Wextra -Wall -pedantic -Wfatal-errors -Wshadow'
 
 FLAGS_LIBRARIES='-lseccomp'
 # note that we can't have both `-static` and `-lseccomp`
