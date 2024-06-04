@@ -1,7 +1,7 @@
 
-#include "filter_syscalls/syscall_names.cpp"
+#include "3_3_1_syscall_names.cpp"
 
-#include "filter_syscalls/syscall_handles.cpp"
+#include "3_3_2_syscall_handles.cpp"
 
 int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 

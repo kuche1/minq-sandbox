@@ -19,8 +19,6 @@
 // https://unix.stackexchange.com/questions/243237/how-to-save-restore-terminal-output
 // sounds cool, but is probably a bad idea
 
-#include "inc/1_includes_namespaces.cpp"
-
-#include "inc/2_functions_macros.cpp"
-
-#include "inc/3_main.cpp"
+#include "inc/1_0_includes_namespaces.cpp"
+#include "inc/2_0_functions_macros.cpp"
+#include "inc/3_0_main.cpp"
