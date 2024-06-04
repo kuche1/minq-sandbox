@@ -18,8 +18,10 @@ pid_t spawn_executable(Sandbox_settings& settings){
 
         set_static_rules(settings);
 
-        EXECVP(settings.executable, settings.executable_args);
-        // everything below this point should be unreachable
+        execvp(settings.executable, settings.executable_args);
+        
+        cerr << "execvp failed: could not run `" << settings.executable << "`\n";
+        exit(1);
 
     }else{
 
