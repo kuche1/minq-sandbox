@@ -4,6 +4,8 @@
 // handle filesystem:delete syscalls
 // in fact, we don't seem to handle all open cases
 // https://linasm.sourceforge.net/docs/syscalls/filesystem.php
+//
+// restructure using folders ? put a number and a name on the folder and only numbers on the files within?
 
 // TOD0
 //
