@@ -4,14 +4,12 @@
 // handle filesystem:delete syscalls
 // in fact, we don't seem to handle all open cases
 // https://linasm.sourceforge.net/docs/syscalls/filesystem.php
-//
-// restructure using folders ? put a number and a name on the folder and only numbers on the files within?
 
 // TOD0
 //
 // make it so that instead of invalidating the syscall id we skip the execution and overwrite the return code
 //
-// add the option to save all filesystem choices in a folder
+// make user interactions colorful
 
 // TOD1
 //
@@ -19,7 +17,7 @@
 // https://unix.stackexchange.com/questions/243237/how-to-save-restore-terminal-output
 // sounds cool, but is probably a bad idea
 //
-// make user interactions colorful
+// add the option to save all filesystem choices in a folder
 
 // BAD IDEAS
 //
