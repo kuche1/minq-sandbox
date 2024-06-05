@@ -150,8 +150,14 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             // link operations
 
             case SYS_link:
+            case SYS_symlink:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1path(settings, pid, regs);
+            } break;
+
+            case SYS_linkat:
+            {
+                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdold_arg1pathold_arg2dirfdnew_arg3pathnew(settings, pid, regs);
             } break;
 
             // networking
