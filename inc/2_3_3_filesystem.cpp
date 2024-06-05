@@ -27,17 +27,21 @@ tuple<bool, string> resolve_path_at_cwd(const string& path){
     return make_tuple(false, string(resolved_path));
 }
 
-pair<bool, string> resolve_path(pid_t process_pid, const string& path){
+// relative_to's default value is ""
+pair<bool, string> resolve_path(pid_t process_pid, const string& path, string relative_to){
 
-    ostringstream oss_process_pwd_file;
-    oss_process_pwd_file << "/proc/" << process_pid << "/cwd";
-    string process_pwd_file = oss_process_pwd_file.str();
-    auto [process_cwd_failure, process_cwd] = resolve_path_at_cwd(process_pwd_file);
-    if(process_cwd_failure){
-        return make_pair(true, "could not resolve process cwd file: " + process_pwd_file);
+    if(relative_to == ""){
+        ostringstream oss_process_pwd_file;
+        oss_process_pwd_file << "/proc/" << process_pid << "/cwd";
+        string process_pwd_file = oss_process_pwd_file.str();
+        auto [process_cwd_failure, process_cwd] = resolve_path_at_cwd(process_pwd_file);
+        if(process_cwd_failure){
+            return make_pair(true, "could not resolve process cwd file: " + process_pwd_file);
+        }
+        relative_to = process_cwd;
     }
 
-    boost::filesystem::path pcwdp(process_cwd);
+    boost::filesystem::path pcwdp(relative_to);
     boost::filesystem::path unresolved_path(path);
     boost::filesystem::path canonical_path;
 

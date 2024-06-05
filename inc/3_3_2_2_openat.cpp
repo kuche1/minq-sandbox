@@ -3,15 +3,12 @@ pair<bool, string> handle_syscall_openat(Sandbox_settings& settings, pid_t pid, 
 
     // https://man7.org/linux/man-pages/man2/openat.2.html
 
-    constexpr bool ret_value_if_cant_resolve_path = true;
-    // probably file doesn't exist
-    // denying the syscall would be the safer choice, however I've seen apps break because of this
-    // as the app crashes thinkin that the OS doesnt support the `open` syscall (as of writing this the
-    // method for invalidating syscalls that we use is to ivalidate the syscall id) (example: python3)
-
-    string txt_cant_resolve_path = "cannot resolve path: ";
-    string txt_cant_get_fd = "cannot determine FD related to: ";
-    string txt_allowed_path = "permitted: ";
+    // do we permit or deny the syscall if the path cannot be resolved
+    // denying the syscall might cause an app to fail (example: python3)
+    //
+    // perhaps this has to do something with the way we are currently
+    // blocking the syscalls (by invalidating the ID)
+    constexpr bool cant_resolve_path = true;
 
     // read and sanitise parameter `path` from process memory
     // this can, in fact, be a file or a folder
@@ -20,38 +17,25 @@ pair<bool, string> handle_syscall_openat(Sandbox_settings& settings, pid_t pid, 
 
     if(dir_fd == AT_FDCWD){ // relative to CWD
 
-        auto [failed, resolved_path] = resolve_path_at_cwd(path);
+        auto [failed, resolved_path] = resolve_path(pid, path);
         if(failed){
-            return make_pair(ret_value_if_cant_resolve_path, txt_cant_resolve_path + path);
+            return make_pair(cant_resolve_path, resolved_path);
         }
         path = resolved_path;
     
     }else{
 
-        if(path.starts_with("/")){
-
-            auto [failed, resolved_path] = resolve_path_at_cwd(path);
-            if(failed){
-                return make_pair(ret_value_if_cant_resolve_path, txt_cant_resolve_path + path);
-            }
-            path = resolved_path;
-
-        }else{
-
-            auto [failed, fd_path] = process_get_fd_path(pid, dir_fd);
-            if(failed){
-                return make_pair(ret_value_if_cant_resolve_path, txt_cant_get_fd + path);
-            }
-
-            // we know that `path` doesn't start with `/`, so the only thing to check is `fd_path`
-            if(!fd_path.ends_with("/")){
-                fd_path += "/";
-            }
-    
-            // now combine the folder path and the filename
-            path = fd_path + path;
-
+        auto [failure_fd_path, fd_path] = process_get_fd_path(pid, dir_fd);
+        if(failure_fd_path){
+            return make_pair(cant_resolve_path, fd_path);
         }
+
+        auto [failure_resolved_path, resolved_path] = resolve_path(pid, path, fd_path);
+        if(failure_resolved_path){
+            return make_pair(cant_resolve_path, resolved_path);
+        }
+
+        path = resolved_path;
 
     }
 
@@ -69,6 +53,6 @@ pair<bool, string> handle_syscall_openat(Sandbox_settings& settings, pid_t pid, 
 
     // return
 
-    return make_pair(is_node_allowed(settings, path), txt_allowed_path + path);
+    return make_pair(is_node_allowed(settings, path), path);
 
 }

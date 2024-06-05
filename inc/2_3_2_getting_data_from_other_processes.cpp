@@ -47,9 +47,9 @@ tuple<bool, string> process_get_fd_path(pid_t pid, int fd){
     oss_path << "/proc/" << pid << "/fd/" << fd;
     string path = oss_path.str();
 
-    auto [failed, resolved_path] = resolve_path_at_cwd(path);
+    auto [failed, resolved_path] = resolve_path(pid, path);
     if(failed){
-        return make_tuple(true, "");
+        return make_tuple(true, resolved_path);
     }
 
     return make_tuple(false, resolved_path);
