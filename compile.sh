@@ -8,8 +8,9 @@ FLAGS_STANDARD='-std=c++23'
 
 FLAGS_STRICT='-Werror -Wextra -Wall -pedantic -Wfatal-errors -Wshadow'
 
-FLAGS_LIBRARIES='-lseccomp'
+FLAGS_LIBRARIES='-lseccomp -lboost_system -lboost_filesystem'
 # note that we can't have both `-static` and `-lseccomp`
+# install boost: sudo pacman -S boost
 
 FLAGS_OPTIMISATION=''
 # adding '-Ofast' seems to somehow fuck things up
