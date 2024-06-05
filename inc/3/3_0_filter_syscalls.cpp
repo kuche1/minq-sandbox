@@ -106,35 +106,35 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
             // file operations
 
-            case SYS_creat: // TODO this actually creates a new file, so our resolve will fuck up
-            case SYS_open: // TODO this actually creates a new file, so our resolve will fuck up
-            case SYS_mknod: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_creat:
+            case SYS_open:
+            case SYS_mknod:
             case SYS_truncate:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
             } break;
 
-            case SYS_openat: // TODO this actually creates a new file, so our resolve will fuck up
-            case SYS_name_to_handle_at: // (or does it) TODO this actually creates a new file, so our resolve will fuck up
-            case SYS_mknodat: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_openat:
+            case SYS_name_to_handle_at:
+            case SYS_mknodat:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
             } break;
 
-            case SYS_rename: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_rename:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1path(settings, pid, regs);
             } break;
 
-            case SYS_renameat: // TODO this actually creates a new file, so our resolve will fuck up
-            case SYS_renameat2: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_renameat:
+            case SYS_renameat2:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdold_arg1pathold_arg2dirfdnew_arg3pathnew(settings, pid, regs);
             } break;
 
             // directory operations
 
-            case SYS_mkdir: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_mkdir:
             case SYS_rmdir:
             case SYS_chdir:
             case SYS_chroot:
@@ -142,14 +142,14 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
             } break;
 
-            case SYS_mkdirat: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_mkdirat:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
             } break;
 
             // link operations
 
-            case SYS_link: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_link:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1path(settings, pid, regs);
             } break;

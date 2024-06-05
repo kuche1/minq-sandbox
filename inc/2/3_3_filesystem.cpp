@@ -20,6 +20,8 @@ string get_cwd(){
 }
 
 // TODO this can be fucked if with if the attacker has a symlink created b4hand
+//
+// just keep in mind the fact that this fnc is use everywhere, example: what if someone runs a syscall that creates a new file? if we are to simply use canonical paths if would fail; what if someone is to delete a symlink? if we are to use regular+canonical_when_possible paths this would fail; what is we don't use canonical paths at all? you are able to escape the sandbox if a sandbox already exists that symlinks to another location
 
 string resolve_path_at_cwd(const string& path){
 
