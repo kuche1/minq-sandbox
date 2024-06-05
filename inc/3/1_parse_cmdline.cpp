@@ -119,6 +119,11 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     exit(1);
                 }
 
+                if( ("/"+arg+"/").contains("/./") ){
+                    cerr << "Raw path must not contain `.`: " << arg << endl;
+                    exit(1);
+                }
+
                 settings.filesystem_allowed_nodes.push_back(arg);
 
             // ...
