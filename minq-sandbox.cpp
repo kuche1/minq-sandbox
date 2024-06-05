@@ -12,8 +12,6 @@
 
 // TOD0
 //
-// make it so that instead of invalidating the syscall id we skip the execution and overwrite the return code
-//
 // make user interactions colorful
 
 // TOD1
@@ -23,6 +21,9 @@
 // sounds cool, but is probably a bad idea
 //
 // add the option to save all filesystem choices in a folder
+//
+// make it so that instead of invalidating the syscall id we skip the execution and overwrite the return code
+// this is somewhat solved since I can't find any apps that break with the current way of ivalidating+changing the syscall ret code
 
 // BAD IDEAS
 //
