@@ -171,3 +171,12 @@ pair<bool, string> is_unresolved_node_allowed(const Sandbox_settings& settings, 
 
     return make_pair(is_resolved_node_allowed(settings, resolved_path), resolved_path);
 }
+
+pair<bool, string> handle_syscall_arg0path(const Sandbox_settings& settings, pid_t pid, struct user_regs_struct& regs){
+
+    char* path_cstr = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+
+    string path = process_read_cstr_as_string(pid, path_cstr);
+
+    return is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
+}
