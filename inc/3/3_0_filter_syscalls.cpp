@@ -98,6 +98,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
         PTRACE(PTRACE_GETREGS, pid, NULL, &regs);
 
         long syscall_id = CPU_REG_RW_SYSCALL_ID(regs);
+        const char* syscall_name = get_syscall_name(syscall_id);
         bool syscall_allow = false;
         string syscall_info = "no info available";
 
@@ -169,7 +170,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             default:
             {
 
-                cerr << "Unknown syscall: " << syscall_id << endl;
+                cerr << "Unknown syscall: " << syscall_id << ": " << syscall_name << endl;
                 exit(1);
 
             } break;
@@ -181,8 +182,6 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
         if(!syscall_allow){
 
             syscalls_blocked += 1;
-
-            const char* syscall_name = get_syscall_name(syscall_id);
 
             cout << COL_BLOCKED_SYSCALL << "Blocked syscall " << syscall_id << ": " << syscall_name << ": " << syscall_info << COL_RESET << endl;
 
