@@ -37,17 +37,12 @@ bool is_node_allowed(Sandbox_settings& settings, const string& path){
     // check hardcoded filters
 
     {
-        // allow generic stuff
-
-        if(path == "/dev/tty"){ // using the terminal (as in printing, not executing commands)
-            return true;
-        }
 
         if(path == "/dev/null"){ // the "nothing" file
             return true;
         }
 
-        if(path.starts_with("/usr/lib/")){ // libraries
+        if(path == "/dev/tty"){ // using the terminal (as in printing, not executing commands)
             return true;
         }
 
