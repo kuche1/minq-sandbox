@@ -197,3 +197,14 @@ pair<bool, string> handle_syscall_arg0path_arg1path(const Sandbox_settings& sett
 
     return {allow, info};
 }
+
+pair<bool, string> handle_syscall_arg0dirfd_arg1path(const Sandbox_settings& settings, pid_t pid, struct user_regs_struct& regs){
+
+    int dir_fd = CPU_REG_R_SYSCALL_ARG0(regs);
+    char* path_cstr = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
+
+    string path = process_read_cstr_as_string(pid, path_cstr);
+
+    return is_unresolved_node_allowed(settings, pid, dir_fd, path);
+
+}

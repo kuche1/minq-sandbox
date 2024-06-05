@@ -109,19 +109,21 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             case SYS_creat:
             case SYS_open:
             case SYS_mknod:
+            case SYS_truncate:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
             } break;
 
+            case SYS_openat:
+            case SYS_name_to_handle_at:
+            case SYS_mknodat: // TODO this actually creates a new file, so our resolve will fuck up
+            {
+                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
+            } break;
 
             case SYS_rename:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1path(settings, pid, regs);
-            } break;
-
-            case SYS_truncate:
-            {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
             } break;
 
             // directory operations
@@ -132,6 +134,11 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             case SYS_chroot:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
+            } break;
+
+            case SYS_mkdirat:
+            {
+                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
             } break;
 
             // link operations
