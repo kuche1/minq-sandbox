@@ -19,9 +19,13 @@ void set_static_rules(Sandbox_settings& settings){
 
     {
         uint32_t action = SCMP_ACT_TRACE(69);
-
         if(settings.filesystem_allow_all){
             action = SCMP_ACT_ALLOW;
+        }
+
+        uint32_t readlink_action = action;
+        if(settings.readlink_allow_all){
+            readlink_action = SCMP_ACT_ALLOW;
         }
 
         // file operations
@@ -63,9 +67,10 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(symlinkat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlink), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlinkat), 0);
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(readlink), 0);
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(readlinkat), 0);
-        // TODO rmlink is actually used for deleting (example: rm /tmp/a)
+        SECCOMP_RULE_ADD(ctx, readlink_action, SCMP_SYS(readlink), 0);
+        SECCOMP_RULE_ADD(ctx, readlink_action, SCMP_SYS(readlinkat), 0);
+
+        // basic file attributes // TODO
     }
 
     // networking

@@ -192,7 +192,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                     case AF_BRIDGE:
                     case AF_NETLINK:
                         syscall_allow = true;
-                        syscall_info = "creation of a socket, but not for contacting the outside world";
+                        syscall_info = "local";
                         break;
 
                     case AF_INET:
@@ -200,7 +200,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                     case AF_DECnet:
                     case AF_ROSE:
                         syscall_allow = false;
-                        syscall_info = "creation of a socket for contacting the outside world";
+                        syscall_info = "outside world";
                         break;
 
                     default:
