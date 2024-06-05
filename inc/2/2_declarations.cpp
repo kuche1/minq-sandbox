@@ -1,2 +1,2 @@
 
-pair<bool, string> resolve_path(pid_t process_pid, const string& path, string relative_to = "");
+string resolve_path_at_cwd(const string& path);

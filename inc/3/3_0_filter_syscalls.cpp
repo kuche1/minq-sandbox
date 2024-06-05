@@ -208,6 +208,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             cout << COL_BLOCKED_SYSCALL << "Blocked syscall " << syscall_id << ": " << syscall_name << ": " << syscall_info << COL_RESET << endl;
 
             CPU_REG_RW_SYSCALL_ID(regs) = -1; // invalidate the syscall by changing the ID
+            CPU_REG_RW_SYSCALL_RET(regs) = -1; // also put bad return code, suprisingly this fixes some programs (example: python3)
 
             // TOD0 there is probably a way to only set the syscall id reg, and not all of them
             ptrace(PTRACE_SETREGS, pid, NULL, &regs);

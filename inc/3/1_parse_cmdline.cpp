@@ -83,11 +83,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                 };
 
                 for(const string& node : common_nodes){
-                    auto [failure, resolved] = resolve_path_at_cwd(node);
-                    if(failure){
-                        cout << COL_WARNING <<"Ignoring common node `" << node << "` since path could not be resolved: " << resolved << COL_RESET << endl;
-                        continue;
-                    }
+                    string resolved = resolve_path_at_cwd(node);
                     settings.filesystem_allowed_nodes.push_back(resolved);
                 }
             
@@ -96,13 +92,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
             }else if(arg.starts_with(flag_node_allow)){
 
                 arg = arg.substr(flag_node_allow.size(), arg.size() - flag_node_allow.size());
-
-                auto [failure, resolved] = resolve_path_at_cwd(arg);
-                if(failure){
-                    cerr << "Could not resolve path `" << arg << "` (probably doesn't exist; if you insist you can use " << flag_node_allow_raw << "instead)\n";
-                    exit(1);
-                }
-
+                string resolved = resolve_path_at_cwd(arg);
                 settings.filesystem_allowed_nodes.push_back(resolved);
 
             }else if(arg.starts_with(flag_node_allow_raw)){

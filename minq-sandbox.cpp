@@ -4,6 +4,11 @@
 // handle filesystem:delete syscalls
 // in fact, we don't seem to handle all open cases
 // https://linasm.sourceforge.net/docs/syscalls/filesystem.php
+//
+// maybe we should just use paths instead of strings
+//
+// new function `process_get_cwd` and use it in: string resolve_path(pid_t process_pid, int relative_to_fd, const string& path)
+// ACTUALLY I need to check if AT_CWD is a real file descriptor or just a hack, cuz if it's a real fd that means that some of my rules are fucked sice they rely that the only way of creaaating new fds if thru open
 
 // TOD0
 //

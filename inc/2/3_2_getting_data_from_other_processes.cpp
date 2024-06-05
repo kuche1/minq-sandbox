@@ -41,16 +41,11 @@ string process_read_cstr_as_string(pid_t pid, char* addr){
 
 }
 
-tuple<bool, string> process_get_fd_path(pid_t pid, int fd){
+string process_get_fd_path(pid_t pid, int fd){
 
     ostringstream oss_path;
     oss_path << "/proc/" << pid << "/fd/" << fd;
     string path = oss_path.str();
 
-    auto [failed, resolved_path] = resolve_path(pid, path);
-    if(failed){
-        return make_tuple(true, resolved_path);
-    }
-
-    return make_tuple(false, resolved_path);
+    return resolve_path_at_cwd(path);
 }
