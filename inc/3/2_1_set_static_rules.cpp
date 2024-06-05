@@ -61,6 +61,8 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(linkat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(symlink), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(symlinkat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlink), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlinkat), 0);
         // TODO rmlink is actually used for deleting (example: rm /tmp/a)
     }
 
