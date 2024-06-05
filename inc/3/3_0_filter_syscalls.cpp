@@ -167,6 +167,31 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
             } break;
 
+            case SYS_mkdir:
+            {
+                
+                char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+                mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);
+
+                auto [allow, info] = handle_syscall_mkdirat(settings, pid, AT_FDCWD, pathname, mode);
+                syscall_allow = allow;
+                syscall_info = info;
+
+            } break;
+
+            case SYS_mkdirat:
+            {
+
+                int dfd = CPU_REG_R_SYSCALL_ARG0(regs);
+                char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+                mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);                
+
+                auto [allow, info] = handle_syscall_mkdirat(settings, pid, dfd, pathname, mode);
+                syscall_allow = allow;
+                syscall_info = info;
+
+            } break;
+
             default:
             {
 

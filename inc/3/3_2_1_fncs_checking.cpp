@@ -1,5 +1,5 @@
 
-bool is_node_allowed(const Sandbox_settings& settings, const string& path){
+bool is_resolved_node_allowed(const Sandbox_settings& settings, const string& path){
 
     // check already existing filters
 
@@ -130,4 +130,44 @@ bool is_node_allowed(const Sandbox_settings& settings, const string& path){
         }
     }
 
+}
+
+pair<bool, string> is_unresolved_node_allowed(const Sandbox_settings& settings, const pid_t relative_to_process_pid, const int relative_to_dir_fd, const string& unresolved_path){
+
+    // do we permit or deny the syscall if the path cannot be resolved
+    //
+    // denying the syscall might cause an app to fail (example: python3)
+    //
+    // perhaps this has to do something with the way we are currently
+    // blocking the syscalls (by invalidating the ID (as of writing this))
+    constexpr bool cant_resolve_path = true;
+
+    string resolved_path;
+
+    if(relative_to_dir_fd == AT_FDCWD){ // relative to CWD
+
+        auto [failed, resolved] = resolve_path(relative_to_process_pid, unresolved_path);
+        if(failed){
+            return make_pair(cant_resolve_path, resolved);
+        }
+    
+        resolved_path = resolved;
+    
+    }else{
+
+        auto [failure_fd_path, fd_path] = process_get_fd_path(relative_to_process_pid, relative_to_dir_fd);
+        if(failure_fd_path){
+            return make_pair(cant_resolve_path, fd_path);
+        }
+
+        auto [failure_resolved, resolved] = resolve_path(relative_to_process_pid, unresolved_path, fd_path);
+        if(failure_resolved){
+            return make_pair(cant_resolve_path, resolved);
+        }
+
+        resolved_path = resolved;
+
+    }
+
+    return make_pair(is_resolved_node_allowed(settings, resolved_path), resolved_path);
 }
