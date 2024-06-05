@@ -28,6 +28,8 @@ void set_static_rules(Sandbox_settings& settings){
 
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdir),   0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdirat), 0);
+
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(rmdir), 0);
     }
 
     // networking

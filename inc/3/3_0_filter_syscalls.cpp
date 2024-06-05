@@ -140,56 +140,42 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
             case SYS_open:
             {
-
                 int dir_fd = AT_FDCWD;
                 char *filename = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
                 int flags = CPU_REG_R_SYSCALL_ARG1(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG2(regs);
-
-                auto [tmp_syscall_allow, tmp_syscall_info] = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
-                syscall_allow = tmp_syscall_allow;
-                syscall_info = tmp_syscall_info;
-
+                tie(syscall_allow, syscall_info) = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
             } break;
 
 
             case SYS_openat:
             {
-
                 int dir_fd = CPU_REG_R_SYSCALL_ARG0(regs);
                 char *filename = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
                 int flags = CPU_REG_R_SYSCALL_ARG2(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG3(regs);
-
-                auto [tmp_syscall_allow, tmp_syscall_info] = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
-                syscall_allow = tmp_syscall_allow;
-                syscall_info = tmp_syscall_info;
-
+                tie(syscall_allow, syscall_info) = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
             } break;
 
             case SYS_mkdir:
             {
-                
                 char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);
-
-                auto [allow, info] = handle_syscall_mkdirat(settings, pid, AT_FDCWD, pathname, mode);
-                syscall_allow = allow;
-                syscall_info = info;
-
+                tie(syscall_allow, syscall_info) = handle_syscall_mkdirat(settings, pid, AT_FDCWD, pathname, mode);
             } break;
 
             case SYS_mkdirat:
             {
-
                 int dfd = CPU_REG_R_SYSCALL_ARG0(regs);
                 char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
                 mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);                
+                tie(syscall_allow, syscall_info) = handle_syscall_mkdirat(settings, pid, dfd, pathname, mode);
+            } break;
 
-                auto [allow, info] = handle_syscall_mkdirat(settings, pid, dfd, pathname, mode);
-                syscall_allow = allow;
-                syscall_info = info;
-
+            case SYS_rmdir:
+            {
+                char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+                tie(syscall_allow, syscall_info) = handle_syscall_rmdir(settings, pid, pathname);
             } break;
 
             default:
