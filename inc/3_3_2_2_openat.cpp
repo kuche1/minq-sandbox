@@ -7,7 +7,7 @@ pair<bool, string> handle_syscall_openat(Sandbox_settings& settings, pid_t pid, 
     // denying the syscall might cause an app to fail (example: python3)
     //
     // perhaps this has to do something with the way we are currently
-    // blocking the syscalls (by invalidating the ID)
+    // blocking the syscalls (by invalidating the ID (as of writing this))
     constexpr bool cant_resolve_path = true;
 
     // read and sanitise parameter `path` from process memory
