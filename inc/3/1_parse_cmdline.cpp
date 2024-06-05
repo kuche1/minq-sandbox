@@ -28,7 +28,8 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
     string flag_common_allow = "--common-allow";
     vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help, flag_filesystem_ask, flag_common_allow};
     string flag_node_allow = "--node-allow:";
-    vector<string> flags_prefix = {flag_node_allow};
+    string flag_node_allow_raw = "--node-allow-raw:";
+    vector<string> flags_prefix = {flag_node_allow, flag_node_allow_raw};
 
     // defaults
     Sandbox_settings settings;
@@ -77,6 +78,8 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     "/etc/ld.so.cache",
                     // libraries
                     "/usr/lib",
+                    // ...
+                    "/dev/null",
                 };
 
                 for(const string& node : common_nodes){
@@ -96,11 +99,27 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
                 auto [failure, resolved] = resolve_path_at_cwd(arg);
                 if(failure){
-                    cerr << "Could not resolve path `" << arg << "` (probably doesn't exist)\n";
+                    cerr << "Could not resolve path `" << arg << "` (probably doesn't exist; if you insist you can use " << flag_node_allow_raw << "instead)\n";
                     exit(1);
                 }
 
                 settings.filesystem_allowed_nodes.push_back(resolved);
+
+            }else if(arg.starts_with(flag_node_allow_raw)){
+
+                arg = arg.substr(flag_node_allow_raw.size(), arg.size() - flag_node_allow_raw.size());
+
+                if(arg.ends_with("/")){
+                    cerr << "Raw path must not end with `/`: " << arg << endl;
+                    exit(1);
+                }
+
+                if( ("/"+arg+"/").contains("/../") ){
+                    cerr << "Raw path must not contain `..`: " << arg << endl;
+                    exit(1);
+                }
+
+                settings.filesystem_allowed_nodes.push_back(arg);
 
             // ...
 
