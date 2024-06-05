@@ -1,5 +1,5 @@
 
-bool is_node_allowed(Sandbox_settings& settings, const string& path){
+bool is_node_allowed(const Sandbox_settings& settings, const string& path){
 
     // check already existing filters
 
@@ -30,24 +30,6 @@ bool is_node_allowed(Sandbox_settings& settings, const string& path){
                 return true;
             }
 
-        }
-
-    }
-
-    // check hardcoded filters
-
-    {
-
-        if(path == "/dev/null"){ // the "nothing" file
-            return true;
-        }
-
-        if(path == "/dev/tty"){ // using the terminal (as in printing, not executing commands)
-            return true;
-        }
-
-        if(path == "/etc/ld.so.cache"){ // linker
-            return true;
         }
 
     }

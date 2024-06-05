@@ -16,14 +16,6 @@ typedef struct{
     bool filesystem_ask = false;
     vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name
 
-    // color
-    // you can find some colors here - https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
-
-    bool color = false;
-    string color_reset = "\033[0m";
-    string color_block_syscall = "\033[33m";
-    // string color_user_interaction = "\033[32m";
-
 } Sandbox_settings;
 
 Sandbox_settings parse_cmdline(int argc, char**argv){
@@ -33,8 +25,8 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
     string flag_filesystem_allow_all = "--filesystem-allow-all";
     string flag_help = "--help";
     string flag_filesystem_ask = "--filesystem-ask";
-    string flag_color = "--color";
-    vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help, flag_filesystem_ask, flag_color};
+    string flag_allow_common = "--allow-common";
+    vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help, flag_filesystem_ask, flag_allow_common};
     string flag_node_allow = "--node-allow:";
     vector<string> flags_prefix = {flag_node_allow};
 
@@ -62,12 +54,12 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
             }else if(arg == flag_help){ // not the best, but good enough
 
-                cout << "Here is a list of the flags that can be called by themselves (example: " << flag_networking_enable << "):\n";
+                cout << "Flags that can be called by themselves (example: " << flag_networking_enable << "):\n";
                 for(string& flag : flags_match){
                     cout << flag << endl;
                 }
             
-                cout << "Here is a list of the flags that require an argument (example: " << flag_node_allow << "/home/user123/data):\n";
+                cout << "Flags that require an argument (example: " << flag_node_allow << "/home/user123/data):\n";
                 for(string& flag : flags_prefix){
                     cout << flag << endl;
                 }
@@ -78,9 +70,23 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
                 settings.filesystem_ask = true;
 
-            }else if(arg == flag_color){
+            }else if(arg == flag_allow_common){
 
-                settings.color = true;
+                vector<string> common_nodes = {
+                    // linker
+                    "/etc/ld.so.cache",
+                    // libraries
+                    "/usr/lib",
+                };
+
+                for(const string& node : common_nodes){
+                    auto [failure, resolved] = resolve_path_at_cwd(node);
+                    if(failure){
+                        cout << COL_WARNING <<"Ignoring common node `" << node << "` since path could not be resolved: " << resolved << COL_RESET << endl;
+                        continue;
+                    }
+                    settings.filesystem_allowed_nodes.push_back(resolved);
+                }
             
             // flags that are used as prefixes
 
