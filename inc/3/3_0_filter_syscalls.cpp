@@ -129,7 +129,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             case SYS_renameat:
             case SYS_renameat2:
             {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdold_arg1pathold_arg2dirfdnew_arg3pathnew(settings, pid, regs);
+                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(settings, pid, regs);
             } break;
 
             // directory operations
@@ -157,7 +157,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
             case SYS_linkat:
             {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdold_arg1pathold_arg2dirfdnew_arg3pathnew(settings, pid, regs);
+                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(settings, pid, regs);
             } break;
 
             // networking

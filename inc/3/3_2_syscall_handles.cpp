@@ -178,7 +178,7 @@ pair<bool, string> handle_syscall_arg0dirfd_arg1path(const Sandbox_settings& set
 
 }
 
-pair<bool, string> handle_syscall_arg0dirfdold_arg1pathold_arg2dirfdnew_arg3pathnew(const Sandbox_settings& settings, pid_t pid, struct user_regs_struct& regs){
+pair<bool, string> handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(const Sandbox_settings& settings, pid_t pid, struct user_regs_struct& regs){
 
     int dir_fd_old = CPU_REG_R_SYSCALL_ARG0(regs);
     char* path_cstr_old = (char*)CPU_REG_R_SYSCALL_ARG1(regs);

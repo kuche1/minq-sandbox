@@ -76,6 +76,8 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                 vector<string> common_nodes = {
                     // linker
                     "/etc/ld.so.cache",
+                    // binaries
+                    "/usr/bin",
                     // libraries
                     "/usr/lib",
                     // ...
