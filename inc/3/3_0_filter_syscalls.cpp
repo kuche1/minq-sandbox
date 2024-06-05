@@ -185,7 +185,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 // https://man7.org/linux/man-pages/man2/socket.2.html
 
                 int domain = CPU_REG_R_SYSCALL_ARG0(regs);
-                
+
                 switch(domain){
 
                     case AF_LOCAL: // same as AF_UNIX
