@@ -127,6 +127,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             } break;
 
             case SYS_renameat: // TODO this actually creates a new file, so our resolve will fuck up
+            case SYS_renameat2: // TODO this actually creates a new file, so our resolve will fuck up
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdold_arg1pathold_arg2dirfdnew_arg3pathnew(settings, pid, regs);
             } break;
