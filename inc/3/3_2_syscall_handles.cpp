@@ -196,3 +196,22 @@ pair<bool, string> handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(cons
 
     return {allow, info};
 }
+
+pair<bool, string> handle_syscall_arg0path_arg1dirfdA_arg2pathA(const Sandbox_settings& settings, pid_t pid, struct user_regs_struct& regs){
+
+    char* path0_cstr = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+
+    int dirfd1 = CPU_REG_R_SYSCALL_ARG1(regs);
+    char* path1_cstr = (char*)CPU_REG_R_SYSCALL_ARG2(regs);
+
+    string path0 = process_read_cstr_as_string(pid, path0_cstr);
+    string path1 = process_read_cstr_as_string(pid, path1_cstr);
+
+    auto [allow0, info0] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path0);
+    auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, dirfd1, path1);
+
+    bool allow = allow0 && allow1;
+    string info = "path0<" + info0 + "> path1<" + info1 + ">";
+
+    return {allow, info};
+}

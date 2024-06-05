@@ -160,6 +160,11 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(settings, pid, regs);
             } break;
 
+            case SYS_symlinkat:
+            {
+                tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1dirfdA_arg2pathA(settings, pid, regs);
+            } break;
+
             // networking
 
             case SYS_socket:
