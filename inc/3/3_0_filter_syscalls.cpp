@@ -1,6 +1,6 @@
 
 #include "3_1_syscall_names.cpp"
-#include "3_2_0_syscall_handles.cpp"
+#include "3_2_syscall_handles.cpp"
 
 int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
@@ -140,11 +140,13 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
             case SYS_open:
             {
-                int dir_fd = AT_FDCWD;
                 char *filename = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
-                int flags = CPU_REG_R_SYSCALL_ARG1(regs);
-                mode_t mode = CPU_REG_R_SYSCALL_ARG2(regs);
-                tie(syscall_allow, syscall_info) = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
+                // int flags = CPU_REG_R_SYSCALL_ARG1(regs);
+                // mode_t mode = CPU_REG_R_SYSCALL_ARG2(regs);
+
+                string path = process_read_cstr_as_string(pid, filename);
+
+                tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
             } break;
 
 
@@ -152,30 +154,42 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             {
                 int dir_fd = CPU_REG_R_SYSCALL_ARG0(regs);
                 char *filename = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
-                int flags = CPU_REG_R_SYSCALL_ARG2(regs);
-                mode_t mode = CPU_REG_R_SYSCALL_ARG3(regs);
-                tie(syscall_allow, syscall_info) = handle_syscall_openat(settings, pid, dir_fd, filename, flags, mode);
+                // int flags = CPU_REG_R_SYSCALL_ARG2(regs);
+                // mode_t mode = CPU_REG_R_SYSCALL_ARG3(regs);
+
+                string path = process_read_cstr_as_string(pid, filename);
+
+                tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, dir_fd, path);
             } break;
 
             case SYS_mkdir:
             {
                 char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
-                mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);
-                tie(syscall_allow, syscall_info) = handle_syscall_mkdirat(settings, pid, AT_FDCWD, pathname, mode);
+                // mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);
+
+                string path = process_read_cstr_as_string(pid, pathname);
+
+                tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
             } break;
 
             case SYS_mkdirat:
             {
                 int dfd = CPU_REG_R_SYSCALL_ARG0(regs);
                 char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
-                mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);                
-                tie(syscall_allow, syscall_info) = handle_syscall_mkdirat(settings, pid, dfd, pathname, mode);
+                // mode_t mode = CPU_REG_R_SYSCALL_ARG1(regs);
+
+                string path = process_read_cstr_as_string(pid, pathname);
+         
+                tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, dfd, path);
             } break;
 
             case SYS_rmdir:
             {
                 char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
-                tie(syscall_allow, syscall_info) = handle_syscall_rmdir(settings, pid, pathname);
+
+                string path = process_read_cstr_as_string(pid, pathname);
+
+                tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
             } break;
 
             default:
