@@ -180,3 +180,20 @@ pair<bool, string> handle_syscall_arg0path(const Sandbox_settings& settings, pid
 
     return is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
 }
+
+pair<bool, string> handle_syscall_arg0path_arg1path(const Sandbox_settings& settings, pid_t pid, struct user_regs_struct& regs){
+
+    char* path0_cstr = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+    char* path1_cstr = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
+
+    string path0 = process_read_cstr_as_string(pid, path0_cstr);
+    string path1 = process_read_cstr_as_string(pid, path1_cstr);
+
+    auto [allow0, info0] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path0);
+    auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path1);
+
+    bool allow = allow0 && allow1;
+    string info = "path0<" + info0 + "> path1<" + info1 + ">";
+
+    return {allow, info};
+}

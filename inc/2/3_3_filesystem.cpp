@@ -5,6 +5,9 @@
 ////////////////
 /////////////
 
+// TODO make these not complain if the path doesn't exist, and instead pretend that it does and
+// return the appropriate path
+
 tuple<bool, string> resolve_path_at_cwd(const string& path){
 
     boost::filesystem::path unresolved_path(path);
