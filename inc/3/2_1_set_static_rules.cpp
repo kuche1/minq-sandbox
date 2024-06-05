@@ -15,6 +15,7 @@ void set_static_rules(Sandbox_settings& settings){
     SECCOMP_ATTR_SET(ctx, SCMP_FLTATR_ACT_BADARCH, SCMP_ACT_ALLOW);
 
     // filesystem
+    // https://linasm.sourceforge.net/docs/syscalls/filesystem.php
 
     {
         uint32_t action = SCMP_ACT_TRACE(69);
@@ -23,8 +24,14 @@ void set_static_rules(Sandbox_settings& settings){
             action = SCMP_ACT_ALLOW;
         }
 
+        // file operations
+
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(creat), 0);
+
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(open),   0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(openat), 0);
+
+        // directory operations
 
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdir),   0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdirat), 0);

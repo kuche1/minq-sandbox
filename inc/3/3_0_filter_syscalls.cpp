@@ -192,6 +192,15 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
             } break;
 
+            case SYS_creat:
+            {
+                char* pathname = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+                
+                string path = process_read_cstr_as_string(pid, pathname);
+
+                tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
+            } break;
+
             default:
             {
                 cerr << "Unknown syscall: " << syscall_id << ": " << syscall_name << endl;
