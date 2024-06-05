@@ -7,24 +7,18 @@
 
 tuple<bool, string> resolve_path_at_cwd(const string& path){
 
-    // TODO we could replace this with boost's version
-    // as to avoid the memory error
+    boost::filesystem::path unresolved_path(path);
+    boost::filesystem::path canonical_path;
 
-    char resolved_path[PATH_MAXLEN] = {0};
-    errno = 0;
-
-    if(!realpath(path.c_str(), resolved_path)){
-
-        if(errno == ENOMEM){
-            cout << "Could not resolve path because of lack of buffer memory, please contact the developer\n";
-            exit(1);
-        }
-
-        return make_tuple(true, string(""));
-
+    try{
+        canonical_path = boost::filesystem::canonical(unresolved_path);
+    }catch(const boost::filesystem::filesystem_error& ex){
+        return make_pair(true, ex.what());
     }
 
-    return make_tuple(false, string(resolved_path));
+    string canonical_path_as_str = canonical_path.string();
+
+    return make_pair(false, canonical_path_as_str);
 }
 
 // relative_to's default value is ""

@@ -1,32 +1,32 @@
 
-bool is_node_allowed(Sandbox_settings& settings, string path){
+bool is_node_allowed(Sandbox_settings& settings, const string& path){
 
     // check already existing filters
 
     {
 
         // this is bad but it's good enough
-        string path_fucked = path;
-        if(!path_fucked.ends_with("/")){
-            path_fucked += "/";
+        string path_dash = path;
+        if(!path_dash.ends_with("/")){
+            path_dash += "/";
         }
 
-        for(string allowed_path : settings.filesystem_allowed_nodes){
+        for(string allowed_path_dash : settings.filesystem_allowed_nodes){
 
             // this is bad but it's good enough
-            if(!allowed_path.ends_with("/")){
-                allowed_path += "/";
+            if(!allowed_path_dash.ends_with("/")){
+                allowed_path_dash += "/";
             }
 
             // `path` and `allowed_path` are the same node
 
-            if(path == allowed_path){
+            if(path_dash == allowed_path_dash){
                 return true;
             }
 
             // `path` is a file within `allowed_path`
 
-            if(path.starts_with(allowed_path)){
+            if(path_dash.starts_with(allowed_path_dash)){
                 return true;
             }
 
