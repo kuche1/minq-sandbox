@@ -242,6 +242,15 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
             } break;
 
+            case SYS_chdir:
+            {
+                char* path_ = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+
+                string path = process_read_cstr_as_string(pid, path_);
+
+                tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
+            } break;
+
             // networking
 
             case SYS_socket:

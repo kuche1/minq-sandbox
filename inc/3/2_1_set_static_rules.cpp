@@ -47,8 +47,8 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdir), 0);
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdirat), 0); // depends on `open`
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(rmdir), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(getcwd), 0); // gives info that the app should already know
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(chdir), 0); // TODO
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(getcwd), 0); // gives info that the app should already have
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(chdir), 0);
         // TODO the rest
 
         // link operations
