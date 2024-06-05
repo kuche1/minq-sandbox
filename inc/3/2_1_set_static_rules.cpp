@@ -35,11 +35,12 @@ void set_static_rules(Sandbox_settings& settings){
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(memfd_create), 0); // the file lives in RAM
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mknod), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mknodat), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(rename), 0); // TODO
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(renameat2), 0); // TODO
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(truncate), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(ftruncate), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fallocate), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(rename), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(renameat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(renameat2), 0);
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(truncate), 0); // TODO
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(ftruncate), 0); // TODO
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fallocate), 0); // TODO
 
         // directory operations
 

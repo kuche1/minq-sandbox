@@ -168,6 +168,39 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 tie(syscall_allow, syscall_info) = is_unresolved_node_allowed(settings, pid, dirfd, path);
             } break;
 
+            case SYS_rename:
+            {
+                char* oldpath = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
+                char* newpath = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
+
+                string path_old = process_read_cstr_as_string(pid, oldpath);
+                string path_new = process_read_cstr_as_string(pid, newpath);
+
+                auto [allow_old, info_old] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path_old);
+                auto [allow_new, info_new] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path_new);
+
+                syscall_allow = allow_old && allow_new;
+                syscall_info = "rename-old-name < " + info_old + " > ; rename-new-name < " + info_new + " >";
+            } break;
+
+            case SYS_renameat:
+            case SYS_renameat2: // difference is an additional parameter `flags`
+            {
+                int olddirfd = CPU_REG_R_SYSCALL_ARG0(regs);
+                char* oldpath = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
+                int newdirfd = CPU_REG_R_SYSCALL_ARG2(regs);
+                char* newpath = (char*)CPU_REG_R_SYSCALL_ARG3(regs);
+
+                string path_old = process_read_cstr_as_string(pid, oldpath);
+                string path_new = process_read_cstr_as_string(pid, newpath);
+
+                auto [allow_old, info_old] = is_unresolved_node_allowed(settings, pid, olddirfd, path_old);
+                auto [allow_new, info_new] = is_unresolved_node_allowed(settings, pid, newdirfd, path_new);
+
+                syscall_allow = allow_old && allow_new;
+                syscall_info = "rename-old-name < " + info_old + " > ; rename-new-name < " + info_new + " >";
+            } break;
+
             // directory operations
 
             case SYS_mkdir:
