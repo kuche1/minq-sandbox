@@ -26,6 +26,6 @@
 // filter based on read-only/read-write
 // the sandbox becomes too painful to use (from the user's prespective)
 
-#include "inc/1_0_includes_namespaces.cpp"
-#include "inc/2_0_functions_macros.cpp"
-#include "inc/3_0_main.cpp"
+#include "inc/1/0_includes_namespaces.cpp"
+#include "inc/2/0_functions_macros.cpp"
+#include "inc/3/0_main.cpp"
