@@ -166,11 +166,13 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             } break;
 
             case SYS_unlink:
+            case SYS_readlink:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
             } break;
 
             case SYS_unlinkat:
+            case SYS_readlinkat:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
             } break;
