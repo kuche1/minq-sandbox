@@ -14,7 +14,7 @@ typedef struct{
 
     bool filesystem_allow_all = false;
     bool filesystem_ask = false;
-    vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name
+    vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name // TODO after initially filling this, we should do 1 more round of also adding the cannonical paths
     bool readlink_allow_all = false;
 
 } Sandbox_settings;
