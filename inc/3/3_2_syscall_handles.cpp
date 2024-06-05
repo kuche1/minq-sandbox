@@ -133,7 +133,6 @@ bool is_resolved_node_allowed(const Sandbox_settings& settings, const string& pa
 
 }
 
-// TODO we can remove the string part, think about if it's worth it
 pair<bool, string> is_unresolved_node_allowed(const Sandbox_settings& settings, const pid_t relative_to_process_pid, const int relative_to_dir_fd, const string& unresolved_path){
 
     string resolved_path = resolve_path(relative_to_process_pid, relative_to_dir_fd, unresolved_path);
