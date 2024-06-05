@@ -208,3 +208,23 @@ pair<bool, string> handle_syscall_arg0dirfd_arg1path(const Sandbox_settings& set
     return is_unresolved_node_allowed(settings, pid, dir_fd, path);
 
 }
+
+pair<bool, string> handle_syscall_arg0dirfdold_arg1pathold_arg2dirfdnew_arg3pathnew(const Sandbox_settings& settings, pid_t pid, struct user_regs_struct& regs){
+
+    int dir_fd_old = CPU_REG_R_SYSCALL_ARG0(regs);
+    char* path_cstr_old = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
+
+    int dir_fd_new = CPU_REG_R_SYSCALL_ARG2(regs);
+    char* path_cstr_new = (char*)CPU_REG_R_SYSCALL_ARG3(regs);
+
+    string path_old = process_read_cstr_as_string(pid, path_cstr_old);
+    string path_new = process_read_cstr_as_string(pid, path_cstr_new);
+
+    auto [allow0, info0] = is_unresolved_node_allowed(settings, pid, dir_fd_old, path_old);
+    auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, dir_fd_new, path_new);
+
+    bool allow = allow0 && allow1;
+    string info = "path0<" + info0 + "> path1<" + info1 + ">";
+
+    return {allow, info};
+}
