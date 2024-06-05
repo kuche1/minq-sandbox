@@ -31,22 +31,26 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(open), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(openat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(name_to_handle_at), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(open_by_handle_at), 0); // harmless without `name_to_handle_at`
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(open_by_handle_at), 0); // depends on `name_to_handle_at`
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(memfd_create), 0); // the file lives in RAM
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mknod), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mknodat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(rename), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(renameat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(renameat2), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(truncate), 0); // TODO
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(ftruncate), 0); // TODO
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fallocate), 0); // TODO
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(truncate), 0);
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(ftruncate), 0); // depends on `open`
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fallocate), 0); // depends on `open`
 
         // directory operations
 
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdir), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(mkdirat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(rmdir), 0);
+
+        // link operations
+
+        // TODO rmlink is actually used for deleting (example: rm /tmp/a)
     }
 
     // networking
