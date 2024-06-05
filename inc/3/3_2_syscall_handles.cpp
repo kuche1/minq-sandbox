@@ -161,7 +161,11 @@ pair<bool, string> handle_syscall_arg0path_arg1path(const Sandbox_settings& sett
     auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path1);
 
     bool allow = allow0 && allow1;
-    string info = "path0<" + info0 + "> path1<" + info1 + ">";
+
+    string allow0_str = allow0 ? "good" : "bad";
+    string allow1_str = allow1 ? "good" : "bad";
+
+    string info = "path0:" + allow0_str + "<" + info0 + "> path1:" + allow1_str + "<" + info1 + ">";
 
     return {allow, info};
 }
@@ -192,7 +196,11 @@ pair<bool, string> handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(cons
     auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, dir_fd_new, path_new);
 
     bool allow = allow0 && allow1;
-    string info = "path0<" + info0 + "> path1<" + info1 + ">";
+
+    string allow0_str = allow0 ? "good" : "bad";
+    string allow1_str = allow1 ? "good" : "bad";
+
+    string info = "path0:" + allow0_str + "<" + info0 + "> path1:" + allow1_str + "<" + info1 + ">";
 
     return {allow, info};
 }
@@ -211,7 +219,11 @@ pair<bool, string> handle_syscall_arg0path_arg1dirfdA_arg2pathA(const Sandbox_se
     auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, dirfd1, path1);
 
     bool allow = allow0 && allow1;
-    string info = "path0<" + info0 + "> path1<" + info1 + ">";
+
+    string allow0_str = allow0 ? "good" : "bad";
+    string allow1_str = allow1 ? "good" : "bad";
+
+    string info = "path0:" + allow0_str + "<" + info0 + "> path1:" + allow1_str + "<" + info1 + ">";
 
     return {allow, info};
 }
