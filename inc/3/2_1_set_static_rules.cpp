@@ -23,14 +23,9 @@ void set_static_rules(Sandbox_settings& settings){
             action = SCMP_ACT_ALLOW;
         }
 
-        uint32_t action_readlink = action;
-        if(settings.readlink_allow_all){
-            action_readlink = SCMP_ACT_ALLOW;
-        }
-
-        uint32_t action_utimensat = action;
-        if(settings.flag_utimensat_allow_all){
-            action_utimensat = SCMP_ACT_ALLOW;
+        uint32_t action_metadata = action;
+        if(settings.fs_metadata_allow_all){
+            action_metadata = SCMP_ACT_ALLOW;
         }
 
         // file operations
@@ -72,8 +67,8 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(symlinkat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlink), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlinkat), 0);
-        SECCOMP_RULE_ADD(ctx, action_readlink, SCMP_SYS(readlink), 0);
-        SECCOMP_RULE_ADD(ctx, action_readlink, SCMP_SYS(readlinkat), 0);
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(readlink), 0);
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(readlinkat), 0);
 
         // basic file attributes
 
@@ -88,15 +83,15 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(utime), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(utimes), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimesat), 0);
-        SECCOMP_RULE_ADD(ctx, action_utimensat, SCMP_SYS(utimensat), 0);
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(utimensat), 0);
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimens), 0); // depends on `open`
 
-        // get file status, some apps break without this
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(stat), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(lstat), 0);
-        // // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstat), 0); // depends on `open`
-        // // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstatat64), 0); // only 32bit
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(newfstatat), 0);
+        // get file status
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(stat), 0);
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(lstat), 0);
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstat), 0); // depends on `open`
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstatat64), 0); // only 32bit
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(newfstatat), 0);
 
         // check user permission for file
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(access), 0);

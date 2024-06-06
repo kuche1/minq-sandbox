@@ -15,8 +15,7 @@ typedef struct{
     bool fs_allow_all = false;
     bool fs_ask = false;
     vector<string> fs_allowed = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name // TODO after initially filling this, we should do 1 more round of also adding the cannonical paths
-    bool readlink_allow_all = false;
-    bool flag_utimensat_allow_all = false;
+    bool fs_metadata_allow_all = false;
 
 } Sandbox_settings;
 
@@ -27,10 +26,9 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
     string flag_fs_allow_all = "--fs-allow-all";
     string flag_help = "--help";
     string flag_fs_ask = "--fs-ask";
-    string flag_common_allow = "--common-allow";
-    string flag_readlink_allow_all = "--readlink-allow-all";
-    string flag_utimensat_allow_all = "--utimensat-allow-all";
-    vector<string> flags_match = {flag_networking_enable, flag_fs_allow_all, flag_help, flag_fs_ask, flag_common_allow, flag_readlink_allow_all, flag_utimensat_allow_all};
+    string flag_fs_common_allow = "--fs-common-allow";
+    string flag_fs_metadata_allow_all = "--fs-metadata-allow-all";
+    vector<string> flags_match = {flag_networking_enable, flag_fs_allow_all, flag_help, flag_fs_ask, flag_fs_common_allow, flag_fs_metadata_allow_all};
     string flag_fs_allow = "--fs-allow:";
     string flag_fs_allow_raw = "--fs-allow-raw:";
     vector<string> flags_prefix = {flag_fs_allow, flag_fs_allow_raw};
@@ -77,7 +75,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
                 settings.fs_ask = true;
 
-            }else if(arg == flag_common_allow){
+            }else if(arg == flag_fs_common_allow){
 
                 vector<string> common_nodes = {
                     // linker
@@ -96,13 +94,9 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     settings.fs_allowed.push_back(resolved);
                 }
 
-            }else if(arg == flag_readlink_allow_all){
+            }else if(arg == flag_fs_metadata_allow_all){
 
-                settings.readlink_allow_all = true;
-
-            }else if(arg == flag_utimensat_allow_all){
-
-                settings.flag_utimensat_allow_all = true;
+                settings.fs_metadata_allow_all = true;
             
             // flags that are used as prefixes
 
