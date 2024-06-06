@@ -5,6 +5,9 @@
 //
 // new function `process_get_cwd` and use it in: string resolve_path(pid_t process_pid, int relative_to_fd, const string& path)
 // ACTUALLY I need to check if AT_CWD is a real file descriptor or just a hack, cuz if it's a real fd that means that some of my rules are fucked sice they rely that the only way of creaaating new fds if thru open
+//
+// this doesnt work:
+// ./compile.sh && ./minq-sandbox --fs-common-allow --fs-metadata-allow-all --fs-allow:/tmp/a touch /tmp/a
 
 // TOD0
 //

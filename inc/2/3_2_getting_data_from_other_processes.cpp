@@ -48,3 +48,13 @@ string process_get_fd_path(pid_t pid, int fd){
 
     return resolve_path_at_cwd(path);
 }
+
+string process_get_cwd(pid_t pid){
+
+    ostringstream oss_process_pwd_file;
+    oss_process_pwd_file << "/proc/" << pid << "/cwd";
+    string process_pwd_file = oss_process_pwd_file.str();
+
+    return resolve_path_at_cwd(process_pwd_file);
+
+}

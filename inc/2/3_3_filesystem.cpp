@@ -50,19 +50,10 @@ string resolve_path(pid_t process_pid, int relative_to_fd, const string& path){
     if(!path.starts_with("/")){
 
         string relative_to = [process_pid, relative_to_fd]{
-
             if(relative_to_fd == AT_FDCWD){
-
-                ostringstream oss_process_pwd_file;
-                oss_process_pwd_file << "/proc/" << process_pid << "/cwd";
-                string process_pwd_file = oss_process_pwd_file.str();
-
-                return resolve_path_at_cwd(process_pwd_file);
-
+                return process_get_cwd(process_pid);
             }else{
-
                 return process_get_fd_path(process_pid, relative_to_fd);
-
             }
         }();
 
