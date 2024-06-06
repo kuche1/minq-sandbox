@@ -71,6 +71,20 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, readlink_action, SCMP_SYS(readlinkat), 0);
 
         // basic file attributes // TODO
+
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(umask), 0); // depends on `open`
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(stat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(lstat), 0);
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstat), 0); // depends on `open`
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstatat64), 0); // only 32bit
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(newfstatat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(chmod), 0);
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchmod), 0); // depends on `open`
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchmodat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(chown), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(lchown), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchown), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchownat), 0);
     }
 
     // networking

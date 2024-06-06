@@ -104,12 +104,25 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
 
         switch(syscall_id){
 
-            // file operations
+            // filesystem
 
             case SYS_creat:
             case SYS_open:
             case SYS_mknod:
             case SYS_truncate:
+            case SYS_mkdir:
+            case SYS_rmdir:
+            case SYS_chdir:
+            case SYS_chroot:
+            case SYS_unlink:
+            case SYS_readlink:
+            case SYS_stat:
+            case SYS_lstat:
+            case SYS_chmod:
+            case SYS_unlinkat:
+            case SYS_readlinkat:
+            case SYS_chown:
+            case SYS_lchown: // does not dereference symlinks
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
             } break;
@@ -117,47 +130,19 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             case SYS_openat:
             case SYS_name_to_handle_at:
             case SYS_mknodat:
+            case SYS_mkdirat:
+            case SYS_newfstatat:
+            case SYS_fchmodat:
+            case SYS_fchownat:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
             } break;
 
             case SYS_rename:
-            {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1path(settings, pid, regs);
-            } break;
-
-            case SYS_renameat:
-            case SYS_renameat2:
-            {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(settings, pid, regs);
-            } break;
-
-            // directory operations
-
-            case SYS_mkdir:
-            case SYS_rmdir:
-            case SYS_chdir:
-            case SYS_chroot:
-            {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
-            } break;
-
-            case SYS_mkdirat:
-            {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
-            } break;
-
-            // link operations
-
             case SYS_link:
             case SYS_symlink:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1path(settings, pid, regs);
-            } break;
-
-            case SYS_linkat:
-            {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(settings, pid, regs);
             } break;
 
             case SYS_symlinkat:
@@ -165,16 +150,11 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path_arg1dirfdA_arg2pathA(settings, pid, regs);
             } break;
 
-            case SYS_unlink:
-            case SYS_readlink:
+            case SYS_renameat:
+            case SYS_renameat2:
+            case SYS_linkat:
             {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
-            } break;
-
-            case SYS_unlinkat:
-            case SYS_readlinkat:
-            {
-                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
+                tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(settings, pid, regs);
             } break;
 
             // networking
