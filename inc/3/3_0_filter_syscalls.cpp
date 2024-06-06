@@ -123,6 +123,9 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             case SYS_readlinkat:
             case SYS_chown:
             case SYS_lchown: // does not dereference symlinks
+            case SYS_utime:
+            case SYS_utimes:
+            case SYS_access:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0path(settings, pid, regs);
             } break;
@@ -134,6 +137,10 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
             case SYS_newfstatat:
             case SYS_fchmodat:
             case SYS_fchownat:
+            case SYS_futimesat:
+            case SYS_utimensat:
+            case SYS_faccessat:
+            case SYS_faccessat2:
             {
                 tie(syscall_allow, syscall_info) = handle_syscall_arg0dirfd_arg1path(settings, pid, regs);
             } break;

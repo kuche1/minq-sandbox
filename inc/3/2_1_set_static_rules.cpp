@@ -23,9 +23,14 @@ void set_static_rules(Sandbox_settings& settings){
             action = SCMP_ACT_ALLOW;
         }
 
-        uint32_t readlink_action = action;
+        uint32_t action_readlink = action;
         if(settings.readlink_allow_all){
-            readlink_action = SCMP_ACT_ALLOW;
+            action_readlink = SCMP_ACT_ALLOW;
+        }
+
+        uint32_t action_utimensat = action;
+        if(settings.flag_utimensat_allow_all){
+            action_utimensat = SCMP_ACT_ALLOW;
         }
 
         // file operations
@@ -67,10 +72,10 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(symlinkat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlink), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(unlinkat), 0);
-        SECCOMP_RULE_ADD(ctx, readlink_action, SCMP_SYS(readlink), 0);
-        SECCOMP_RULE_ADD(ctx, readlink_action, SCMP_SYS(readlinkat), 0);
+        SECCOMP_RULE_ADD(ctx, action_readlink, SCMP_SYS(readlink), 0);
+        SECCOMP_RULE_ADD(ctx, action_readlink, SCMP_SYS(readlinkat), 0);
 
-        // basic file attributes // TODO
+        // basic file attributes
 
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(umask), 0); // depends on `open`
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(stat), 0);
@@ -85,6 +90,16 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(lchown), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchown), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchownat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(utime), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(utimes), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimesat), 0);
+        SECCOMP_RULE_ADD(ctx, action_utimensat, SCMP_SYS(utimensat), 0);
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimens), 0); // depends on `open`
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(access), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(faccessat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(faccessat2), 0);
+
+        // extended file attributes // TODO
     }
 
     // networking

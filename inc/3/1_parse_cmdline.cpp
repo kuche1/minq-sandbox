@@ -16,6 +16,7 @@ typedef struct{
     bool filesystem_ask = false;
     vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name // TODO after initially filling this, we should do 1 more round of also adding the cannonical paths
     bool readlink_allow_all = false;
+    bool flag_utimensat_allow_all = false;
 
 } Sandbox_settings;
 
@@ -23,12 +24,13 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
     // flags // would be cool if all of these were constexpr
     string flag_networking_enable = "--networking-enable";
-    string flag_filesystem_allow_all = "--filesystem-allow-all";
+    string flag_filesystem_allow_all = "--filesystem-allow-all"; // TODO rename to node-allow-all
     string flag_help = "--help";
-    string flag_filesystem_ask = "--filesystem-ask";
+    string flag_filesystem_ask = "--filesystem-ask"; // TODO rename to node-ask
     string flag_common_allow = "--common-allow";
     string flag_readlink_allow_all = "--readlink-allow-all";
-    vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help, flag_filesystem_ask, flag_common_allow, flag_readlink_allow_all};
+    string flag_utimensat_allow_all = "--utimensat-allow-all";
+    vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help, flag_filesystem_ask, flag_common_allow, flag_readlink_allow_all, flag_utimensat_allow_all};
     string flag_node_allow = "--node-allow:";
     string flag_node_allow_raw = "--node-allow-raw:";
     vector<string> flags_prefix = {flag_node_allow, flag_node_allow_raw};
@@ -78,6 +80,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                 vector<string> common_nodes = {
                     // linker
                     "/etc/ld.so.cache",
+                    "/etc/ld.so.preload",
                     // binaries
                     "/usr/bin",
                     // libraries
@@ -94,6 +97,10 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
             }else if(arg == flag_readlink_allow_all){
 
                 settings.readlink_allow_all = true;
+
+            }else if(arg == flag_utimensat_allow_all){
+
+                settings.flag_utimensat_allow_all = true;
             
             // flags that are used as prefixes
 

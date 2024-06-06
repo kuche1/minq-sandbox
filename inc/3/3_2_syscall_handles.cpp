@@ -144,7 +144,10 @@ pair<bool, string> handle_syscall_arg0path(const Sandbox_settings& settings, pid
 
     char* path_cstr = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
 
-    string path = process_read_cstr_as_string(pid, path_cstr);
+    auto [fail, path] = process_read_cstr_as_string(pid, path_cstr);
+    if(fail){
+        return {false, path};
+    }
 
     return is_unresolved_node_allowed(settings, pid, AT_FDCWD, path);
 }
@@ -154,8 +157,15 @@ pair<bool, string> handle_syscall_arg0path_arg1path(const Sandbox_settings& sett
     char* path0_cstr = (char*)CPU_REG_R_SYSCALL_ARG0(regs);
     char* path1_cstr = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
 
-    string path0 = process_read_cstr_as_string(pid, path0_cstr);
-    string path1 = process_read_cstr_as_string(pid, path1_cstr);
+    auto [fail0, path0] = process_read_cstr_as_string(pid, path0_cstr);
+    if(fail0){
+        return {false, "fail0: " + path0};
+    }
+
+    auto [fail1, path1] = process_read_cstr_as_string(pid, path1_cstr);
+    if(fail1){
+        return {false, "fail1: " + path1};
+    }
 
     auto [allow0, info0] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path0);
     auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path1);
@@ -175,7 +185,10 @@ pair<bool, string> handle_syscall_arg0dirfd_arg1path(const Sandbox_settings& set
     int dir_fd = CPU_REG_R_SYSCALL_ARG0(regs);
     char* path_cstr = (char*)CPU_REG_R_SYSCALL_ARG1(regs);
 
-    string path = process_read_cstr_as_string(pid, path_cstr);
+    auto [fail, path] = process_read_cstr_as_string(pid, path_cstr);
+    if(fail){
+        return {false, path};
+    }
 
     return is_unresolved_node_allowed(settings, pid, dir_fd, path);
 
@@ -189,8 +202,15 @@ pair<bool, string> handle_syscall_arg0dirfdA_arg1pathA_arg2dirfdB_arg3pathB(cons
     int dir_fd_new = CPU_REG_R_SYSCALL_ARG2(regs);
     char* path_cstr_new = (char*)CPU_REG_R_SYSCALL_ARG3(regs);
 
-    string path_old = process_read_cstr_as_string(pid, path_cstr_old);
-    string path_new = process_read_cstr_as_string(pid, path_cstr_new);
+    auto [fail0, path_old] = process_read_cstr_as_string(pid, path_cstr_old);
+    if(fail0){
+        return {false, "fail0: " + path_old};
+    }
+
+    auto [fail1, path_new] = process_read_cstr_as_string(pid, path_cstr_new);
+    if(fail1){
+        return {false, "fail1: " + path_new};
+    }
 
     auto [allow0, info0] = is_unresolved_node_allowed(settings, pid, dir_fd_old, path_old);
     auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, dir_fd_new, path_new);
@@ -212,8 +232,15 @@ pair<bool, string> handle_syscall_arg0path_arg1dirfdA_arg2pathA(const Sandbox_se
     int dirfd1 = CPU_REG_R_SYSCALL_ARG1(regs);
     char* path1_cstr = (char*)CPU_REG_R_SYSCALL_ARG2(regs);
 
-    string path0 = process_read_cstr_as_string(pid, path0_cstr);
-    string path1 = process_read_cstr_as_string(pid, path1_cstr);
+    auto [fail0, path0] = process_read_cstr_as_string(pid, path0_cstr);
+    if(fail0){
+        return {false, "fail0: " + path0};
+    }
+
+    auto [fail1, path1] = process_read_cstr_as_string(pid, path1_cstr);
+    if(fail1){
+        return {false, "fail1: " + path1};
+    }
 
     auto [allow0, info0] = is_unresolved_node_allowed(settings, pid, AT_FDCWD, path0);
     auto [allow1, info1] = is_unresolved_node_allowed(settings, pid, dirfd1, path1);

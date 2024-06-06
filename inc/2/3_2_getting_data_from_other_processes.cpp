@@ -5,7 +5,7 @@
 ////////////////
 /////////////
 
-string process_read_cstr_as_string(pid_t pid, char* addr){
+pair<bool, string> process_read_cstr_as_string(pid_t pid, char* addr){
 
     string str;
 
@@ -20,8 +20,7 @@ string process_read_cstr_as_string(pid_t pid, char* addr){
 
         if( (*(long*)chunk == -1) && (errno != 0) ){
             // the process has probably exited (or perhaps the address is wrong)
-            cout << "Could not read data from process with pid " << pid << '\n';
-            exit(1);
+            return {true, "could not read cstring from process"};
         }
 
         addr += sizeof(long);
@@ -31,7 +30,7 @@ string process_read_cstr_as_string(pid_t pid, char* addr){
         for(char ch : chunk){
 
             if(ch == 0){
-                return str;
+                return {false, str};
             }
 
             str += ch;
