@@ -85,7 +85,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     "/usr/bin",
                     // libraries
                     "/usr/lib",
-                    // ...
+                    // null
                     "/dev/null",
                 };
 
