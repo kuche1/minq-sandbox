@@ -1433,6 +1433,10 @@ const char* get_syscall_name(long syscall_id) {
         case SYS_waitpid : return "waitpid";
 #endif
 
+#ifdef SYS_faccessat2
+        case SYS_faccessat2: return "faccessat2";
+#endif
+
         default:
                 return "unknown";
 
