@@ -8,6 +8,8 @@
 //
 // this doesnt work:
 // ./compile.sh && ./minq-sandbox --fs-common-allow --fs-metadata-allow-all --fs-allow:/tmp/a touch /tmp/a
+// curiously, adding sudo does work:
+// ./compile.sh && sudo ./minq-sandbox --fs-common-allow --fs-metadata-allow-all --fs-allow:/tmp/a touch /tmp/a
 
 // TOD0
 //
