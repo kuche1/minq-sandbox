@@ -12,9 +12,9 @@ typedef struct{
 
     // filesystem
 
-    bool filesystem_allow_all = false;
-    bool filesystem_ask = false;
-    vector<string> filesystem_allowed_nodes = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name // TODO after initially filling this, we should do 1 more round of also adding the cannonical paths
+    bool fs_allow_all = false;
+    bool fs_ask = false;
+    vector<string> fs_allowed = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name // TODO after initially filling this, we should do 1 more round of also adding the cannonical paths
     bool readlink_allow_all = false;
     bool flag_utimensat_allow_all = false;
 
@@ -24,16 +24,16 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
     // flags // would be cool if all of these were constexpr
     string flag_networking_enable = "--networking-enable";
-    string flag_filesystem_allow_all = "--filesystem-allow-all"; // TODO rename to node-allow-all
+    string flag_fs_allow_all = "--fs-allow-all";
     string flag_help = "--help";
-    string flag_filesystem_ask = "--filesystem-ask"; // TODO rename to node-ask
+    string flag_fs_ask = "--fs-ask";
     string flag_common_allow = "--common-allow";
     string flag_readlink_allow_all = "--readlink-allow-all";
     string flag_utimensat_allow_all = "--utimensat-allow-all";
-    vector<string> flags_match = {flag_networking_enable, flag_filesystem_allow_all, flag_help, flag_filesystem_ask, flag_common_allow, flag_readlink_allow_all, flag_utimensat_allow_all};
-    string flag_node_allow = "--node-allow:";
-    string flag_node_allow_raw = "--node-allow-raw:";
-    vector<string> flags_prefix = {flag_node_allow, flag_node_allow_raw};
+    vector<string> flags_match = {flag_networking_enable, flag_fs_allow_all, flag_help, flag_fs_ask, flag_common_allow, flag_readlink_allow_all, flag_utimensat_allow_all};
+    string flag_fs_allow = "--fs-allow:";
+    string flag_fs_allow_raw = "--fs-allow-raw:";
+    vector<string> flags_prefix = {flag_fs_allow, flag_fs_allow_raw};
 
     // defaults
     Sandbox_settings settings;
@@ -52,10 +52,12 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
             // flags that exactly match
 
             if(arg == flag_networking_enable){
+
                 settings.networking_enable = true;
 
-            }else if(arg == flag_filesystem_allow_all){
-                settings.filesystem_allow_all = true;
+            }else if(arg == flag_fs_allow_all){
+
+                settings.fs_allow_all = true;
 
             }else if(arg == flag_help){ // not the best, but good enough
 
@@ -64,16 +66,16 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     cout << flag << endl;
                 }
             
-                cout << "Flags that require an argument (example: " << flag_node_allow << "/home/user123/data):\n";
+                cout << "Flags that require an argument (example: " << flag_fs_allow << "/home/user123/data):\n";
                 for(string& flag : flags_prefix){
                     cout << flag << endl;
                 }
             
                 exit(0);
             
-            }else if(arg == flag_filesystem_ask){
+            }else if(arg == flag_fs_ask){
 
-                settings.filesystem_ask = true;
+                settings.fs_ask = true;
 
             }else if(arg == flag_common_allow){
 
@@ -91,7 +93,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
                 for(const string& node : common_nodes){
                     string resolved = resolve_path_at_cwd(node);
-                    settings.filesystem_allowed_nodes.push_back(resolved);
+                    settings.fs_allowed.push_back(resolved);
                 }
 
             }else if(arg == flag_readlink_allow_all){
@@ -104,15 +106,15 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
             
             // flags that are used as prefixes
 
-            }else if(arg.starts_with(flag_node_allow)){
+            }else if(arg.starts_with(flag_fs_allow)){
 
-                arg = arg.substr(flag_node_allow.size(), arg.size() - flag_node_allow.size());
+                arg = arg.substr(flag_fs_allow.size(), arg.size() - flag_fs_allow.size());
                 string resolved = resolve_path_at_cwd(arg);
-                settings.filesystem_allowed_nodes.push_back(resolved);
+                settings.fs_allowed.push_back(resolved);
 
-            }else if(arg.starts_with(flag_node_allow_raw)){
+            }else if(arg.starts_with(flag_fs_allow_raw)){
 
-                arg = arg.substr(flag_node_allow_raw.size(), arg.size() - flag_node_allow_raw.size());
+                arg = arg.substr(flag_fs_allow_raw.size(), arg.size() - flag_fs_allow_raw.size());
 
                 if(arg.ends_with("/")){
                     cerr << "Raw path must not end with `/`: " << arg << endl;
@@ -129,7 +131,7 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                     exit(1);
                 }
 
-                settings.filesystem_allowed_nodes.push_back(arg);
+                settings.fs_allowed.push_back(arg);
 
             // ...
 

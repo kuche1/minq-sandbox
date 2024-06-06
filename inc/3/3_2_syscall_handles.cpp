@@ -11,7 +11,7 @@ bool is_resolved_node_allowed(const Sandbox_settings& settings, const string& pa
             path_dash += "/";
         }
 
-        for(string allowed_path_dash : settings.filesystem_allowed_nodes){
+        for(string allowed_path_dash : settings.fs_allowed){
             // cout << "DEBUG: path_dash:" << path_dash << " allowed_path_dash:" << allowed_path_dash << endl;
 
             // this is bad but it's good enough
@@ -41,7 +41,7 @@ bool is_resolved_node_allowed(const Sandbox_settings& settings, const string& pa
 
         // check if interactive mode is even enabled
 
-        if(!settings.filesystem_ask){
+        if(!settings.fs_ask){
             return false;
         }
 

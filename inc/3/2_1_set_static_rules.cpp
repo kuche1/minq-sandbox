@@ -19,7 +19,7 @@ void set_static_rules(Sandbox_settings& settings){
 
     {
         uint32_t action = SCMP_ACT_TRACE(69);
-        if(settings.filesystem_allow_all){
+        if(settings.fs_allow_all){
             action = SCMP_ACT_ALLOW;
         }
 
