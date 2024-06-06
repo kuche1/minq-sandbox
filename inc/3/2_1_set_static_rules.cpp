@@ -83,7 +83,7 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(utime), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(utimes), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimesat), 0);
-        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(utimensat), 0);
+        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(utimensat), 0);
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimens), 0); // depends on `open`
 
         // get file status
@@ -94,9 +94,9 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(newfstatat), 0);
 
         // check user permission for file
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(access), 0);
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(faccessat), 0);
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(faccessat2), 0);
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(access), 0);
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(faccessat), 0);
+        SECCOMP_RULE_ADD(ctx, action_metadata, SCMP_SYS(faccessat2), 0);
 
         // extended file attributes // TODO
     }
