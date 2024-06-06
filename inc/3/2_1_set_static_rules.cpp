@@ -78,11 +78,6 @@ void set_static_rules(Sandbox_settings& settings){
         // basic file attributes
 
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(umask), 0); // depends on `open`
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(stat), 0);
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(lstat), 0);
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstat), 0); // depends on `open`
-        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstatat64), 0); // only 32bit
-        SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(newfstatat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(chmod), 0);
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchmod), 0); // depends on `open`
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fchmodat), 0);
@@ -95,6 +90,15 @@ void set_static_rules(Sandbox_settings& settings){
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimesat), 0);
         SECCOMP_RULE_ADD(ctx, action_utimensat, SCMP_SYS(utimensat), 0);
         // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(futimens), 0); // depends on `open`
+
+        // get file status, some apps break without this
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(stat), 0);
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(lstat), 0);
+        // // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstat), 0); // depends on `open`
+        // // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(fstatat64), 0); // only 32bit
+        // SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(newfstatat), 0);
+
+        // check user permission for file
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(access), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(faccessat), 0);
         SECCOMP_RULE_ADD(ctx, action, SCMP_SYS(faccessat2), 0);
