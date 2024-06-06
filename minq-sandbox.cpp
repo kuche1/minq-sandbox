@@ -1,10 +1,6 @@
 
 // TODO
 //
-// handle filesystem:delete syscalls
-// in fact, we don't seem to handle all open cases
-// https://linasm.sourceforge.net/docs/syscalls/filesystem.php
-//
 // maybe we should just use paths instead of strings
 //
 // new function `process_get_cwd` and use it in: string resolve_path(pid_t process_pid, int relative_to_fd, const string& path)
