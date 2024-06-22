@@ -1,7 +1,7 @@
 
 // TODO
 //
-// add flag that makes it so that only ~ is filtered and nothing else
+// you can get around some of the restrictions using /proc/<pid>/cwd
 //
 // maybe we should just use paths instead of strings
 //

@@ -11,8 +11,38 @@ bool is_resolved_node_allowed(const Sandbox_settings& settings, const string& pa
             path_dash += "/";
         }
 
+        if(settings.fs_filter_only.size() > 0){
+
+            bool found = false;
+
+            for(string filter_only_path : settings.fs_filter_only){
+                
+                // this is bad but it's good enough
+                if(!filter_only_path.ends_with("/")){
+                    filter_only_path += "/";
+                }
+
+                // `path` and `filter_only_path` are the same node
+                if(path_dash == filter_only_path){
+                    found = true;
+                    break;
+                }
+
+                // `path` is a file within `filter_only_path`
+                if(path_dash.starts_with(filter_only_path)){
+                    found = true;
+                    break;
+                }
+
+            }
+
+            if(!found){
+                return true;
+            }
+
+        }
+
         for(string allowed_path_dash : settings.fs_allowed){
-            // cout << "DEBUG: path_dash:" << path_dash << " allowed_path_dash:" << allowed_path_dash << endl;
 
             // this is bad but it's good enough
             if(!allowed_path_dash.ends_with("/")){
@@ -20,13 +50,11 @@ bool is_resolved_node_allowed(const Sandbox_settings& settings, const string& pa
             }
 
             // `path` and `allowed_path` are the same node
-
             if(path_dash == allowed_path_dash){
                 return true;
             }
 
             // `path` is a file within `allowed_path`
-
             if(path_dash.starts_with(allowed_path_dash)){
                 return true;
             }

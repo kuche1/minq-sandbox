@@ -187,7 +187,7 @@ int filter_syscalls(Sandbox_settings settings, pid_t first_child_pid){
                     case AF_DECnet:
                     case AF_ROSE:
                         syscall_allow = false;
-                        syscall_info = "outside world";
+                        syscall_info = "attempt at connecting with the outside world";
                         break;
 
                     default:

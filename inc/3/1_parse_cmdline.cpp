@@ -16,6 +16,7 @@ typedef struct{
     bool fs_ask = false;
     vector<string> fs_allowed = {}; // if the names match we'll allow it AND if it's a file that is contains in a folder with such name // TODO after initially filling this, we should do 1 more round of also adding the cannonical paths
     bool fs_metadata_allow_all = false;
+    vector<string> fs_filter_only = {};
 
 } Sandbox_settings;
 
@@ -31,7 +32,8 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
     vector<string> flags_match = {flag_networking_enable, flag_fs_allow_all, flag_help, flag_fs_ask, flag_fs_common_allow, flag_fs_metadata_allow_all};
     string flag_fs_allow = "--fs-allow:";
     string flag_fs_allow_raw = "--fs-allow-raw:";
-    vector<string> flags_prefix = {flag_fs_allow, flag_fs_allow_raw};
+    string flag_fs_filter_only = "--fs-filter-only:";
+    vector<string> flags_prefix = {flag_fs_allow, flag_fs_allow_raw, flag_fs_filter_only};
 
     // defaults
     Sandbox_settings settings;
@@ -126,6 +128,13 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
                 }
 
                 settings.fs_allowed.push_back(arg);
+
+            }else if(arg.starts_with(flag_fs_filter_only)){
+
+                arg = arg.substr(flag_fs_filter_only.size(), arg.size() - flag_fs_filter_only.size());
+                string resolved = resolve_path_at_cwd(arg);
+                cout << "DBG: adding: " << resolved << endl;
+                settings.fs_filter_only.push_back(resolved);
 
             // ...
 
