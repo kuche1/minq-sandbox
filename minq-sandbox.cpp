@@ -1,6 +1,8 @@
 
 // TODO
 //
+// add flag that makes it so that only ~ is filtered and nothing else
+//
 // maybe we should just use paths instead of strings
 //
 // new function `process_get_cwd` and use it in: string resolve_path(pid_t process_pid, int relative_to_fd, const string& path)
