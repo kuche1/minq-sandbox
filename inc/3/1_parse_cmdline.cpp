@@ -22,7 +22,7 @@ typedef struct{
 
 Sandbox_settings parse_cmdline(int argc, char**argv){
 
-    // flags // would be cool if all of these were constexpr
+    // flags
     string flag_networking_enable = "--networking-enable";
     string flag_fs_allow_all = "--fs-allow-all";
     string flag_help = "--help";
@@ -133,7 +133,6 @@ Sandbox_settings parse_cmdline(int argc, char**argv){
 
                 arg = arg.substr(flag_fs_filter_only.size(), arg.size() - flag_fs_filter_only.size());
                 string resolved = resolve_path_at_cwd(arg);
-                cout << "DBG: adding: " << resolved << endl;
                 settings.fs_filter_only.push_back(resolved);
 
             // ...
