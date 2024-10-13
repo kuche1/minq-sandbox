@@ -1,6 +1,6 @@
 # minq-sandbox
 
-don't mind me fucking around with the includes
+don't mind me messing around with the includes
 
 ## compilation
 
